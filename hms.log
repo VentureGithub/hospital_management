@@ -1,0 +1,11 @@
+
+> hms_frontend@0.1.0 dev
+> next dev -H 64.227.191.193 -p 8084
+
+  ▲ Next.js 14.2.4
+  - Local:        http://64.227.191.193:8084
+  - Network:      http://64.227.191.193:8084
+
+ ✓ Starting...
+ ✓ Ready in 2.1s
+ ○ Compiling / ...

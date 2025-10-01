@@ -1,0 +1,47 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  PROJECT_NAME: hms
+  BUILD_DIR: dist
+  DEPLOY_BASE: /opt/APPs/react_files
+  DEPLOY_DIR: "$DEPLOY_BASE/PROJECT_NAME"
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+
+build-job:
+  stage: build
+  tags:
+    - linux
+  script:
+    - echo "Cleaning node_modules and package-lock.json to fix Rollup bug..."
+    - rm -rf node_modules package-lock.json
+    - npm cache clean --force
+    - echo "Installing dependencies..."
+    - npm install
+    - echo "Building the project..."
+    - npm run build
+  artifacts:
+    paths:
+      - $BUILD_DIR
+  only:
+    - frontend-main-dev
+
+deploy-job:
+  stage: deploy
+  tags:
+    - linux
+  dependencies:
+    - build-job
+  script:
+    - echo "Deploying $PROJECT_NAME to $DEPLOY_DIR..."
+    - echo "Cleaning old files if any..."
+    - sudo rm -rf "$DEPLOY_DIR"
+    - sudo mkdir -p "$DEPLOY_DIR"
+    - sudo cp -r "$BUILD_DIR/"* "$DEPLOY_DIR"/
+  only:
+    - frontend-main-dev
