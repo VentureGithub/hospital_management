@@ -261,8 +261,8 @@ const Birthform = () => {
                             <label className="block text-gray-700 text-sm">Dr.on Duty</label>
                             <select onChange={handleChange1} className='w-full px-4 py-2 border text-sm rounded-lg focus:outline-none'>
                                 <option>Select Doctor</option>
-                                {dataa.map((data) => (
-                                    <option value={data.drId}>{data.drName}</option>
+                                {dataa.map((data , index) => (
+                                    <option key={index} value={data.drId}>{data.drName}</option>
                                 ))}
                             </select>
                         </div>

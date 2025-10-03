@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // Set base URL using environment variables
 // const baseUrl = process.env.NEXT_API_URL ;
-const baseUrl ="https://ventureconsultancyservices.com/hms/"
+  export  const baseUrl ="https://ventureconsultancyservices.com/hms/"
 axios.defaults.baseURL = baseUrl;
 
 // Create an Axios instance

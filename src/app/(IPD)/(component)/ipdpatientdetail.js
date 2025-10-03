@@ -138,13 +138,15 @@ const IPDPatientDetails = ({ IPDID }) => {
                                 <td>{roomAllotmentDetail.bedNo}</td>
                             </tr>
                             <tr>
+                                {/* eslint-disable-next-line react/no-unescaped-entities */}
                                <td colSpan={6}>
     <br />
-    Patient is being treated by
+ Patient is being treated by&nbsp;
+
 </td>
                             </tr>
                             <tr>
-                                <td>Doctor's Name:</td>
+                                <td>Doctor Name:</td>
                                 <td colSpan={5}>
                                     Dr. {doctorDetails.drName} , {doctorDetails.qualification} , {departmentRecord.depName}
                                 </td>

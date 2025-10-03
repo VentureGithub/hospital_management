@@ -24,7 +24,7 @@ const PatientDashboard = () => {
                         <IoTime size={40} className='bg-teal-500 text-white p-1 rounded-md' />
                         <p className="text-3xl md:text-4xl font-medium">10</p>
                     </div>
-                    <p className='flex justify-start text-teal-500'>Today's Total Patients</p>
+                    <p className='flex justify-start text-teal-500'>Today Total Patient</p>
                 </div>
                 <div className="bg-white  p-4 rounded-lg shadow-md text-center">
                     <h3 className="text-lg md:text-xl font-semibold flex justify-start">Monthly Patients</h3>
