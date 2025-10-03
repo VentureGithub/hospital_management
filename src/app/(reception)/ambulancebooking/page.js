@@ -6,7 +6,7 @@ import apiClient from "@/app/config";
 import withAuth from '@/app/(components)/WithAuth';
 import { BaseUrl } from "@/app/config";
 import { useState, useEffect } from "react";
-import Icon from "@/app/(components)/icon";
+import Icon from "@/app/(components)/Icon";
 import { toast } from 'sonner';
 
 export function Insurance() {

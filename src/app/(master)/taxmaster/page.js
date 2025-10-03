@@ -5,7 +5,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import withAuth from '@/app/(components)/WithAuth';
 import * as Yup from "yup";
 import apiClient from "@/app/config";
-import Icon from "@/app/(components)/icon";
+import Icon from "@/app/(components)/Icon";
 import Heading from "../../(components)/heding";
 import { FaPencilAlt } from "react-icons/fa";
 import { toast } from 'sonner';

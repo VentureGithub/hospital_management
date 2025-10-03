@@ -2,7 +2,7 @@
 import LayoutForm from "../../layouts/layoutForm";
 import Heading from "../../(components)/heding";
 import { useState, useEffect } from "react";
-import Icon from "../../(components)/icon";
+import Icon from "../../(components)/Icon.js";
 import apiClient from "@/app/config";
 import withAuth from '@/app/(components)/WithAuth';
 import { FaPlus } from "react-icons/fa";

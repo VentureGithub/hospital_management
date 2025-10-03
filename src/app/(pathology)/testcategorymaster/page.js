@@ -5,7 +5,7 @@ import { FaPencilAlt } from "react-icons/fa";
 import apiClient from "@/app/config";
 import withAuth from '@/app/(components)/WithAuth';
 import { useState, useEffect } from "react";
-import Icon from "../../(components)/icon";
+import Icon from "../../(components)/Icon";
 
 export function TestCategory() {
     return (

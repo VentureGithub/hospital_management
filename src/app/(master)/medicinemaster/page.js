@@ -3,7 +3,7 @@ import LayoutForm from "../../layouts/layoutForm";
 import Heading from "../../(components)/heding";
 import { useState, useEffect } from "react";
 import { FaPencilAlt } from "react-icons/fa";
-import Icon from "../../(components)/icon";
+import Icon from "../../(components)/Icon";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import apiClient from "@/app/config";

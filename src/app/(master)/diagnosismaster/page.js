@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { FaPencilAlt } from "react-icons/fa";
 import apiClient from "@/app/config";
 import withAuth from '@/app/(components)/WithAuth';
-import Icon from "../../(components)/icon";
+import Icon from "../../(components)/Icon";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { toast } from 'sonner';

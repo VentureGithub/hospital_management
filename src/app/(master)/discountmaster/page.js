@@ -6,7 +6,7 @@ import { BaseUrl } from "@/app/config";
 import { useState, useEffect } from "react";
 import apiClient from "@/app/config";
 import withAuth from '@/app/(components)/WithAuth';
-import Icon from "../../(components)/icon";
+import Icon from "../../(components)/Icon";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { toast } from 'sonner';

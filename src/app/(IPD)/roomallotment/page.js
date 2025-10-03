@@ -7,7 +7,7 @@ import PatientBasicDetails from "@/app/(components)/PatientBasicDetails";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { baseUrl } from "../../config.js";
-import { Swal } from "sweetalert2";
+import  Swal  from "sweetalert2";
 import { useSelector } from "react-redux";
 import DatePicker from "react-datepicker";
 

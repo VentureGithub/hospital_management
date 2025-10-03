@@ -2,7 +2,7 @@
 import LayoutForm from "../../layouts/layoutForm";
 import Heading from "../../(components)/heding";
 import { useState, useEffect } from "react";
-import Icon from "../../(components)/icon";
+import Icon from "../../(components)/Icon";
 import apiClient from "@/app/config";
 import withAuth from '@/app/(components)/WithAuth';
 import { BaseUrl } from "@/app/config"; // Assuming you have a BaseUrl in config

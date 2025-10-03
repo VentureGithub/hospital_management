@@ -9,7 +9,7 @@ import * as Yup from 'yup';
 import apiClient from "@/app/config";
 import { toast } from 'sonner';
 import withAuth from '@/app/(components)/WithAuth';
-import Icon from "@/app/(components)/icon";
+import Icon from "@/app/(components)/Icon";
 
 export function CompanyMaster() {
     return (
