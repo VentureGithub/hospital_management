@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { BaseUrl } from '@/app/config';
 import LayoutForm from '../../layouts/layoutForm';
 import Heading from '../../(components)/heding';
 import { FaPencilAlt } from 'react-icons/fa';

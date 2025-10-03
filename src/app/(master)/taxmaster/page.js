@@ -5,7 +5,6 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import withAuth from '@/app/(components)/WithAuth';
 import * as Yup from "yup";
 import apiClient from "@/app/config";
-import Icon from "@/app/(components)/Icon";
 import Heading from "../../(components)/heding";
 import { FaPencilAlt } from "react-icons/fa";
 import { toast } from 'sonner';
@@ -15,8 +14,7 @@ import { toast } from 'sonner';
 export function TaxMaster() {
     return (
         <LayoutForm>
-            <Icon message="This page manages tax-related information, allowing you to define tax rates,  for proper tax calculation and compliance in the hospital's financial transactions."/>
-            <TaxMasterform />
+           <TaxMasterform />
         </LayoutForm>
     );
 }

@@ -2,10 +2,8 @@
 import LayoutForm from "../../layouts/layoutForm";
 import Heading from "../../(components)/heding";
 import { useState, useEffect } from "react";
-import { FaPencilAlt } from "react-icons/fa";
 import apiClient from "@/app/config";
 import withAuth from '@/app/(components)/WithAuth';
-import Icon from "../../(components)/Icon";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'sonner';
@@ -14,10 +12,8 @@ import { toast } from 'sonner';
 export function ServiceTypeMaster() {
     return (
         <LayoutForm>
-           
-            <ServiceTypeMasterform />
-            <Icon message={"This page is for managing IPD service types. You can view, add, or update different types of inpatient services, such as ( Hospital Bill, IPD Extra Services) "} />
-        </LayoutForm>
+           <ServiceTypeMasterform />
+           </LayoutForm>
     );
 }
 

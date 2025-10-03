@@ -5,7 +5,6 @@ import Heading from "../../(components)/heding";
 import { FaPencilAlt } from "react-icons/fa";
 import apiClient from "@/app/config";
 import withAuth from '@/app/(components)/WithAuth';
-import Icon from "@/app/(components)/Icon";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { toast } from 'sonner';
@@ -13,8 +12,7 @@ import { toast } from 'sonner';
 export function RoomMaster() {
     return (
         <LayoutForm>
-            <Icon message="The Room Master Page is designed to manage the details of all hospital rooms. You can upload the total number of rooms, categorize them by type (e.g., General, Private, ICU), and ensure efficient room management for patient accommodation." />
-            <RoomForm />
+          <RoomForm />
         </LayoutForm>
     );
 }

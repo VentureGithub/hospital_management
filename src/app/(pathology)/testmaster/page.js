@@ -5,12 +5,10 @@ import { FaPencilAlt } from "react-icons/fa";
 import apiClient from "@/app/config";
 import withAuth from '@/app/(components)/WithAuth';
 import { useState, useEffect } from "react";
-import Icon from "../../(components)/Icon";
 
 export function TestMaster() {
     return (
         <LayoutForm>
-            <Icon message="This page manages specific tests by providing detailed information such as the test name, category, and cost, enabling efficient organization and administration of diagnostic services." />
             <TestMasterform />
         </LayoutForm>
     );

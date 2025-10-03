@@ -6,14 +6,13 @@ import { useState, useEffect } from "react";
 import { FaPencilAlt } from "react-icons/fa";
 import apiClient from "@/app/config";
 import withAuth from '@/app/(components)/WithAuth';
-import Icon from "../../(components)/Icon";
+
 
 export function TestType() {
     return (
         <LayoutForm>
             <Diagnosisform />
-            <Icon message="This page specifies individual test types within each category, allowing you to set details like test names and descriptions to streamline test management and selection." />
-        </LayoutForm>
+           </LayoutForm>
     );
 }
 

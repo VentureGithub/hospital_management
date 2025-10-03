@@ -6,12 +6,11 @@ import { toast } from 'sonner';
 import { useState, useEffect } from "react";
 import apiClient from "@/app/config";
 import withAuth from '@/app/(components)/WithAuth';
-import Icon from "../../(components)/Icon";
+
 
 export function Xray() {
     return (
         <LayoutForm>
-            <Icon message="This page manages the details of X-ray services, including the type of X-ray, description, and cost, to streamline service offerings and pricing."/>
             <Xrayform />
         </LayoutForm>
     );

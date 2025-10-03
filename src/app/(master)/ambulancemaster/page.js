@@ -14,7 +14,6 @@ import { toast } from 'sonner'; // Import toast from Sonner
 export function AmbulanceMaster() {
     return (
         <LayoutForm>
-            <Icon message="This page manages ambulance-related information, allowing you to store all ambulance and their assigned drivers." />
             <AmbulanceForm />
         </LayoutForm>
     );

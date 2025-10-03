@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { FaPencilAlt } from "react-icons/fa";
 import apiClient from "@/app/config";
 import withAuth from '@/app/(components)/WithAuth';
-import Icon from "../../(components)/Icon";
+
 
 
 
@@ -13,8 +13,7 @@ export function SubTestMaster() {
     return (
         <LayoutForm>
             <Heading headingText="Sub Test Master" />
-            <Icon message="This page organizes pharmacy items by categories, helping to classify medications and products for easy inventory management and streamlined access."/>
-            <SubTestMasterform />
+           <SubTestMasterform />
         </LayoutForm>
     );
 }

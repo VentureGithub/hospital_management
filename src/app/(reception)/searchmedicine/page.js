@@ -1,8 +1,8 @@
 "use client"
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import LayoutForm from "../../layouts/layoutForm";
 import axios from 'axios';
-import { BaseUrl } from '../../config';
+
 import Heading from '../../(components)/heding';
 
 export default function SearchMedicine() {
@@ -21,36 +21,7 @@ const SearchTypeform = () => {
   const [exp, setDate] = useState();
   const [itemNo, setItemno] = useState();
 
-
-  // const formData = {
-
-  //   medName: "",
-  //   itemno:"",
-  //   dateofexp:"",
-
-
-
-  // };
-  // const fetchMedicine = async () => {
-  //   debugger;
-  //   const url = 'http://localhost:8081/hms/';  // Replace with your API endpoint
-  //   const options = {
-  //     method: 'GET',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //   };
-
-  //   const response = await fetch(url, options);
-  //   if (!response.ok) {
-  //     console.log('Network response was not ok');
-  //     return;
-  //   }
-  //   const data = await response.json();
-  //   setMedicine(data.data);
-  // };
-
-  const fetchMedicine = async (e) => {
+ const fetchMedicine = async (e) => {
     e.preventDefault();
     debugger;
 
@@ -63,34 +34,7 @@ const SearchTypeform = () => {
       alert('No  record found with entered Item No');
     });
 
-
-    // if (dateofexp) {
-    //   axios.get(BaseUrl + "api/dateofexp/byexp?exp" + exp).then((response) => {     ////api/medicines
-    //     console.log("🚀 ~ axios.get ~ response:", response)
-    //     if (response.data.status == "200" && response.data.message == "Success") {
-    //       setSearch(response.data.data);
-    //     }
-    //   }).catch((error) => {
-    //       alert('No  record found with entered Date Of Exp');
-    //   });
-
-    // }
-
-
-    // else if (name) {
-    //   axios.get(BaseUrl + "api/medicine/byName?name=" + name).then((response) => {
-    //     if (response.data.status == "200" && response.data.message == "Success") {
-    //       setSearch(response.data.data);
-    //     }
-    //     else {
-    //       alert('No  record found with entered Medicine Name');
-    //     }
-    //   }).catch((error) => {
-    //       alert('No  record found with entered Medicine Name');
-    //   });
-    // }
-
-  }
+}
 
 
 

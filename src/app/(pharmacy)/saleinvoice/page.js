@@ -12,8 +12,7 @@ import { FaPlus, FaTrash } from 'react-icons/fa';
 export function Sale() {
     return (
         <LayoutForm>
-
-            <SaleForm />
+<SaleForm />
         </LayoutForm>
     );
 }

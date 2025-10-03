@@ -9,13 +9,12 @@ import * as Yup from 'yup';
 import apiClient from "@/app/config";
 import { toast } from 'sonner';
 import withAuth from '@/app/(components)/WithAuth';
-import Icon from "@/app/(components)/Icon";
+
 
 export function CompanyMaster() {
     return (
         <LayoutForm>
-            <Icon message="This page manages information about pharmaceutical companies , including company names , to support streamlined inventory sourcing and supplier management."/>
-            <Companyform />
+          <Companyform />
         </LayoutForm>
     );
 }

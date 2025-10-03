@@ -2,7 +2,6 @@
 import LayoutForm from "../../layouts/layoutForm";
 import Heading from "../../(components)/heding";
 import { useState, useEffect } from "react";
-import Icon from "../../(components)/Icon";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import apiClient from "@/app/config";
@@ -13,8 +12,7 @@ export function MedicineBrand() {
     return (
         <LayoutForm>
             <MedicineBrandform />
-            <Icon message={"This page is created to store medicine brand names, where we will fill in the names of all medicines Brands."} />
-        </LayoutForm>
+          </LayoutForm>
     );
 }
 

@@ -3,7 +3,6 @@ import LayoutForm from "../../layouts/layoutForm";
 import Heading from "../../(components)/heding";
 import { useState, useEffect } from "react";
 import { FaPencilAlt } from "react-icons/fa";
-import Icon from "../../(components)/Icon";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import apiClient from "@/app/config";
@@ -14,8 +13,7 @@ export function MedicineMaster() {
     return (
         <LayoutForm>
             <MedicineMasterform />
-            <Icon message={"The Medicine Master page will assign a medicine name based on the medicine brand and category, and the quantity, manufacturing date, and expiration date will be filled in accordingly. You can view, add, or update"} />
-        </LayoutForm>
+           </LayoutForm>
     );
 }
 

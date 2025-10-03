@@ -6,7 +6,6 @@ import { BaseUrl } from "@/app/config";
 import { useState, useEffect } from "react";
 import apiClient from "@/app/config";
 import withAuth from '@/app/(components)/WithAuth';
-import Icon from "../../(components)/Icon";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { toast } from 'sonner';
@@ -14,7 +13,7 @@ import { toast } from 'sonner';
 export function Discount() {
     return (
         <LayoutForm>
-            <Icon message="The Discount Master page in the Hospital Management System allows administrators to set and manage discounts for various medical services. It includes options for defining discount types, setting eligibility criteria, and specifying validity periods, ensuring flexible and controlled pricing." />
+
             <Discountform />
         </LayoutForm>
     );

@@ -5,7 +5,6 @@ import Heading from "../../(components)/heding";
 import { FaPencilAlt } from "react-icons/fa";
 import apiClient from "@/app/config";
 import withAuth from '@/app/(components)/WithAuth';
-import Icon from "../../(components)/Icon";
 import { useState, useEffect } from "react";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -15,7 +14,6 @@ export function Medicinecategory() {
     return (
         <LayoutForm>
             <Medicinecategoryform />
-            <Icon message={"This page is for managing medicine category details for example ( Antibiotics, Vaccines ). You can view, add, or update different medicine categories "} />
         </LayoutForm>
     );
 }

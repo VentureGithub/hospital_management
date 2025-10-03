@@ -2,7 +2,6 @@
 import LayoutForm from "../../layouts/layoutForm";
 import Heading from "../../(components)/heding";
 import { useState, useEffect } from "react";
-import Icon from "../../(components)/Icon";
 import apiClient from "@/app/config";
 import withAuth from '@/app/(components)/WithAuth';
 import { BaseUrl } from "@/app/config"; // Assuming you have a BaseUrl in config
@@ -14,8 +13,7 @@ export function ServiceMaster() {
     return (
         <LayoutForm>
             <ServiceMasterform />
-            <Icon message={"This page is for managing individual IPD services. You can view or add detailed information about specific services offered to inpatients, including descriptions, rates, and remark."} />
-        </LayoutForm>
+           </LayoutForm>
     );
 }
 

@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { FaPencilAlt } from "react-icons/fa";
 import apiClient from "@/app/config";
 import withAuth from '@/app/(components)/WithAuth';
-import Icon from "../../(components)/Icon";
 import LayoutForm from "../../layouts/layoutForm";
 import Heading from "../../(components)/heding";
 import { Formik, Field, Form, ErrorMessage } from "formik";
@@ -14,8 +13,7 @@ export function MedicineTime() {
     return (
         <LayoutForm>
             <MedicineTimeform />
-            <Icon message={"This page is for managing medicine timing details. You can view, add, or update various medicine timings, such as morning, afternoon, and evening schedules."} />
-        </LayoutForm>
+           </LayoutForm>
     );
 }
 

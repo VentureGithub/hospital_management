@@ -5,7 +5,6 @@ import { FaPencilAlt } from "react-icons/fa";
 import apiClient from "@/app/config";
 import withAuth from '@/app/(components)/WithAuth';
 import { useState, useEffect } from "react";
-import Icon from "@/app/(components)/Icon";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { toast } from 'sonner';
@@ -13,8 +12,7 @@ import { toast } from 'sonner';
 export function Insurance() {
     return (
         <LayoutForm>
-           <Icon message={" A Grade will include all patient-related departments such as OPD, IPD, and ICU. B Grade will consist of HR and Salary departments, while C Grade will cover Pharmacy and other related services. D Grade will include the Ambulance department, and sub-level departments can also be added under each grade.)"} />
-            <InsuranceForm />
+          <InsuranceForm />
         </LayoutForm>
     );
 }

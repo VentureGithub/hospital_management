@@ -1,8 +1,7 @@
 "use client"
 import axios from "axios";
 import LayoutForm from "../../layouts/layoutForm";
-import { useEffect, useState } from 'react';
-import { BaseUrl } from "../../config";
+import {  useState } from 'react';
 import Heading from "../../(components)/heding";
 
 export default function SearchPatient() {

@@ -8,13 +8,12 @@ import * as Yup from 'yup';
 import withAuth from "@/app/(components)/WithAuth";
 import apiClient from "@/app/config";
 import { toast } from 'sonner';
-import Icon from "@/app/(components)/Icon";
+
 
 export function CategoryMaster() {
     return (
         <LayoutForm>
-            <Icon message="This page organizes pharmacy items by categories, helping to classify medications and products for easy inventory management and streamlined access." />
-            <Categoryform />
+           <Categoryform />
         </LayoutForm>
     );
 }

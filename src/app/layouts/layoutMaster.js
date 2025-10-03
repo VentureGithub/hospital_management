@@ -1,6 +1,4 @@
 import Sidebar_Master from "../(components)/sidebar_master";
-
-
 const LayoutMaster = ({ children }) => {
     return (
         <div className='dashboard flex h-screen'>

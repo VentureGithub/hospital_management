@@ -6,13 +6,13 @@ import { toast } from 'sonner';
 import { useState, useEffect } from "react";
 import apiClient from "@/app/config";
 import withAuth from '@/app/(components)/WithAuth';
-import Icon from "../../(components)/Icon";
+
 
 
 export function Ultrasound() {
     return (
         <LayoutForm>
-            <Icon message=" This page allows you to define ultrasound services by providing details such as the service name, description, and associated costs for each type of ultrasound scan." />
+            
             <Ultrasoundform />
         </LayoutForm>
     );

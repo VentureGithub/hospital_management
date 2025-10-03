@@ -4,7 +4,6 @@ import Heading from "../../(components)/heding";
 import { FaPencilAlt } from "react-icons/fa";
 import apiClient from "@/app/config";
 import withAuth from '@/app/(components)/WithAuth';
-import Icon from "../../(components)/Icon";
 import { useState, useEffect } from "react";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -14,8 +13,7 @@ export function ShiftMaster() {
     return (
         <LayoutForm>
             <ShiftMasterform />
-            <Icon message={"This page is for managing shift details for employee. You can view, add, or update information about various shifts."} />
-        </LayoutForm>
+            </LayoutForm>
     );
 }
 

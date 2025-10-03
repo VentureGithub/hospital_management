@@ -4,7 +4,6 @@ import Heading from "../../(components)/heding";
 import { useEffect, useState } from "react";
 import { FaPencilAlt, FaPlus, FaTrash } from "react-icons/fa";
 import { MdDeleteOutline } from "react-icons/md";
-import Icon from "../../(components)/Icon";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import apiClient from "@/app/config";
@@ -15,8 +14,7 @@ export function DoctorMaster() {
     return (
         <LayoutForm>
             <DoctorMasterform />
-            <Icon message={"This page is for managing doctor details. You can view, add, or update information about doctors, such as their name, specialization, contact details, charges, and dates of association with the hospital."} />
-        </LayoutForm>
+           </LayoutForm>
     );
 }
 

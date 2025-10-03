@@ -4,7 +4,6 @@ import Heading from "../../(components)/heding";
 import { FaPencilAlt } from "react-icons/fa";
 import apiClient from "@/app/config";
 import withAuth from '@/app/(components)/WithAuth';
-import Icon from "../../(components)/Icon";
 import { useState, useEffect } from "react";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -15,7 +14,6 @@ export function RoomType() {
     return (
         <LayoutForm>
             <RoomTypeform />
-            <Icon message={"This page is for managing room type details. You can view, add, or update different room types, such as ICU, NICU and Private Room."} />
         </LayoutForm>
     );
 }

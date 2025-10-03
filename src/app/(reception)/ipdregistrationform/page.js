@@ -4,8 +4,6 @@ import LayoutForm from "../../layouts/layoutForm";
 import Heading from "../../(components)/heding";
 import { useState, useEffect } from "react";
 import { toast } from 'sonner';
-import { FaPencilAlt } from "react-icons/fa";
-import { MdDeleteOutline } from "react-icons/md";
 import { IoPrintOutline } from "react-icons/io5";
 import withAuth from '@/app/(components)/WithAuth';
 import apiClient from '@/app/config';

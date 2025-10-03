@@ -4,7 +4,6 @@ import Heading from "../../(components)/heding";
 import { FaPencilAlt } from "react-icons/fa";
 import apiClient from "@/app/config";
 import withAuth from '@/app/(components)/WithAuth';
-import { BaseUrl } from "@/app/config";
 import { useState, useEffect, useRef } from "react";
 import { toast } from 'sonner';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
@@ -13,7 +12,6 @@ import * as Yup from 'yup';
 export  function Supplier() {
     return (
         <LayoutForm>
-            
             <SupplierForm />
         </LayoutForm>
     );

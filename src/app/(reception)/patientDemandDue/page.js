@@ -3,11 +3,6 @@
 import LayoutForm from "../../layouts/layoutForm";
 import Heading from "../../(components)/heding";
 import { useState, useEffect } from "react";
-import { FaPencilAlt } from "react-icons/fa";
-import { MdDeleteOutline } from "react-icons/md";
-import { BaseUrl } from "@/app/config";
-import { IoPrintOutline } from "react-icons/io5";
-import { event } from "jquery";
 import apiClient from "@/app/config";
 import withAuth from '@/app/(components)/WithAuth';
 

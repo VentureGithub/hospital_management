@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { FaPencilAlt } from "react-icons/fa";
 import apiClient from "@/app/config";
 import withAuth from '@/app/(components)/WithAuth';
-import Icon from "../../(components)/Icon";
+
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { toast } from 'sonner';
@@ -13,10 +13,8 @@ import { toast } from 'sonner';
 export function Diagnosis() {
     return (
         <LayoutForm>
-            
             <Diagnosisform />
-            <Icon message="This page is for managing diagnosis details. You can view, add, or update information about different diagnoses, including diagnosis codes, descriptions, and relevant categories." />
-        </LayoutForm>
+           </LayoutForm>
     );
 }
 

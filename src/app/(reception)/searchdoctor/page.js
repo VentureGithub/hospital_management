@@ -3,7 +3,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import LayoutForm from "../../layouts/layoutForm";
 import Heading from "../../(components)/heding";
-import { BaseUrl } from '../../config';
+
 
 export default function SearchDoctor() {
   return (

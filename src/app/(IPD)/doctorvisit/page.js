@@ -9,7 +9,7 @@ import { MdDeleteOutline } from "react-icons/md";
 import { baseUrl } from "../../config.js";
 import { GrUpdate } from "react-icons/gr";
 import { useSelector } from "react-redux";
-import { format } from "date-fns";
+
 import Swal from "sweetalert2";
 
 export default function Doctorvisit() {
