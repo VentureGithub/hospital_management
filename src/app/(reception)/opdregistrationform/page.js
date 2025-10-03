@@ -686,14 +686,7 @@ const OPDRegistrationForm = () => {
                     </div>
                     <div>
                         <label className="block text-gray-700 text-sm">Occupation<span className='font-bold text-red-500'> *</span></label>
-                        {/* <input
-                            type="text"
-                            name="occupation"
-                            className="w-full px-4 py-2 text-sm border rounded-lg focus:outline-none"
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            value={formik.values.occupation}
-                        /> */}
+                       
                         <select
                             name="occupation"
                             className="w-full px-4 py-2 text-sm border text-gray-700 rounded-lg focus:outline-none"
@@ -876,8 +869,8 @@ const OPDRegistrationForm = () => {
                             onBlur={formik.handleBlur}
                             value={formik.values.discount} className="w-full text-gray-700 px-4 py-2 text-sm border rounded-lg focus:outline-none">
                             <option>select Discount</option>
-                            {receptionDiscount.map((data) => (
-                                <option value={data.discountPercentage}>{`${data.discountPercentage}%`}</option>
+                            {receptionDiscount.map((data ,index ) => (
+                                <option key={index} value={data.discountPercentage}>{`${data.discountPercentage}%`}</option>
                             ))}
                         </select>
                     </div>

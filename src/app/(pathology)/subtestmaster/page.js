@@ -177,8 +177,8 @@ const SubTestMasterform = () => {
                             <div className="w-full sm:w-[80%]">
                                 <select onChange={handleChange1} className="w-full px-4 py-2 border rounded-lg focus:outline-none">
                                     <option>select test Name</option>
-                                    {data.map((dataa) => (
-                                        <option value={dataa.testId} >{dataa.testName}</option>
+                                    {data.map((dataa,index) => (
+                                        <option key={index} value={dataa.testId} >{dataa.testName}</option>
                                     ))}
                                 </select>
                             </div>

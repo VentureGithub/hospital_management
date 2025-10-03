@@ -6,7 +6,7 @@ import PatientBasicDetails from "../../(components)/PatientBasicDetails";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { MdDeleteOutline } from "react-icons/md";
-import { BaseUrl } from "../../config";
+import { baseUrl } from "../../config.js";
 import { GrUpdate } from "react-icons/gr";
 import { useSelector } from "react-redux";
 import { format } from "date-fns";
@@ -44,7 +44,7 @@ const DoctorVisitform = () => {
     useEffect(() => {
         const fetchDepartments = async () => {
             try {
-                const response = await axios.get(BaseUrl + 'dep/getAllDepartment');
+                const response = await axios.get(baseUrl + 'dep/getAllDepartment');
                 setDepartments(response.data.data);
             } catch (error) {
                 console.error('Error fetching departments:', error);
@@ -59,7 +59,7 @@ const DoctorVisitform = () => {
         const fetchDoctors = async () => {
             if (selectedDepartmentId) {
                 try {
-                    const response = await axios.get(`${BaseUrl}doc/getAllDocByDeptId?deptId=${selectedDepartmentId}`);
+                    const response = await axios.get(`${baseUrl}doc/getAllDocByDeptId?deptId=${selectedDepartmentId}`);
                     setDoctors(response.data.data);
                 } catch (error) {
                     console.error('Error fetching doctors:', error);
@@ -87,7 +87,7 @@ const DoctorVisitform = () => {
             console.error("Selected IPD is not an array or is undefined.");
         }
 
-        const url = `${BaseUrl}ipdDoctorVisit/saveIpdDoctorVisit`;
+        const url = `${baseUrl}ipdDoctorVisit/saveIpdDoctorVisit`;
 
         try {
             console.log("IPD=" + ipdNo);
@@ -109,7 +109,7 @@ const DoctorVisitform = () => {
 
     const fetchVisitDetails = async () => {
         try {
-            const response = await axios.get(`${BaseUrl}ipdDoctorVisit/getdoctorVisitDetails?ipdNo=${selectedIPD[0].name.ipdNo}`);
+            const response = await axios.get(`${baseUrl}ipdDoctorVisit/getdoctorVisitDetails?ipdNo=${selectedIPD[0].name.ipdNo}`);
             if (response.data.status == 200) {
                 setdata(response.data.data);
             }
@@ -124,7 +124,7 @@ const DoctorVisitform = () => {
         if (!confirmDelete)
             return;
         try {
-            const response = await axios.delete(`${BaseUrl}ipdDoctorVisit/deleteDoctorVisitDetail?visitId=${code}`);
+            const response = await axios.delete(`${baseUrl}ipdDoctorVisit/deleteDoctorVisitDetail?visitId=${code}`);
             if (response.status === 200) {
                 alert("Data is deleted successfully");
                 resetForm();
@@ -153,33 +153,7 @@ const DoctorVisitform = () => {
         });
     };
 
-
-    // const handleDoctorrvisit = async (e) => {
-    //     e.preventDefault();
-    //     try {
-    //         let response;
-    //         if (inputs.visitId) {
-    //             // If visitId is present, update the existing visit
-    //             response = await axios.put(`${BaseUrl}ipdDoctorVisit/updateIpdDoctorVisit`, inputs);
-    //         } else {
-    //             // If visitId is not present, create a new visit
-    //             response = await axios.post(`${BaseUrl}ipdDoctorVisit/saveIpdDoctorVisit`, inputs);
-    //         }
-
-    //         if (response.status === 200) {
-    //             Swal.fire({ text: "Data saved successfully", icon: "success" });
-    //             fetchApi();
-    //             resetForm(); // Optional: Reset the form after submission
-    //         } else {
-    //             alert("Failed! Please try again");
-    //         }
-    //     } catch (error) {
-    //         alert("An error occurred. Please try again.");
-    //         console.error("Save/Update error:", error);
-    //     }
-    // };
-
-    // Handle department selection
+ // Handle department selection
     const handleDepartmentSelect = (event) => {
         const selectedDepartment = departments.find(dept => dept.deptId === parseInt(event.target.value));
         setSelectedDepartmentId(event.target.value);

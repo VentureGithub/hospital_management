@@ -1,4 +1,4 @@
-import { BaseUrl } from "@/app/config";
+import { baseUrl } from "../../config.js";
 import axios from "axios";
 import { format, parseISO } from "date-fns";
 import { useEffect, useState } from "react"
@@ -15,33 +15,33 @@ const IPDPatientDetails = ({ IPDID }) => {
         const fetchIPDdetails = async (IPDID) => {
             try {
                 debugger;
-                const IPDResponse = await axios(`${BaseUrl}ipdregistration/getDetailById?ipdId=${IPDID}`);
+                const IPDResponse = await axios(`${baseUrl}ipdregistration/getDetailById?ipdId=${IPDID}`);
                 if (IPDResponse.data?.status == "200") {
                     const IPDData = IPDResponse.data.data;
                     setIpdDetail(IPDData);
 
-                    const patientResponse = await axios(`${BaseUrl}api/patId?patId=${IPDData.patId}`);
+                    const patientResponse = await axios(`${baseUrl}api/patId?patId=${IPDData.patId}`);
                     if (patientResponse.data?.status == "200") {
                         setPatientDetails(patientResponse.data.data);
                     }
 
-                    const doctorResponse = await axios(`${BaseUrl}doc/getByDrId?drId=${IPDData.drId}`);
+                    const doctorResponse = await axios(`${baseUrl}doc/getByDrId?drId=${IPDData.drId}`);
                     if (doctorResponse.data?.status == "200") {
                         setDoctorDetails(doctorResponse.data.data);
                     }
 
-                    const departmentResponse = await axios(`${BaseUrl}dep/getDepId?deptId=${IPDData.drId}`);
+                    const departmentResponse = await axios(`${baseUrl}dep/getDepId?deptId=${IPDData.drId}`);
                     if (departmentResponse.data?.status == "200") {
                         setDepartmentRecord(departmentResponse.data.data);
                     }
 
-                    const roomResponse = await axios(`${BaseUrl}ipdroomAllotment/getDetailsByPatid?ipdNo=${IPDID}`);
+                    const roomResponse = await axios(`${baseUrl}ipdroomAllotment/getDetailsByPatid?ipdNo=${IPDID}`);
                     if (roomResponse.data?.status == "200") {
                         setRoomAllotmentDetail(roomResponse.data.data);
                         setRoomDetails(roomResponse.data.data[0].master);
                     }
 
-                    const imgageResponse = await axios.get(`${BaseUrl}api/getImage?patId=${IPDData.patId}`, { responseType: 'blob' })
+                    const imgageResponse = await axios.get(`${baseUrl}api/getImage?patId=${IPDData.patId}`, { responseType: 'blob' })
                     if (imgageResponse.status == "200") {
                         const blob = imgageResponse.data;
                         const url = URL.createObjectURL(blob);
@@ -138,10 +138,10 @@ const IPDPatientDetails = ({ IPDID }) => {
                                 <td>{roomAllotmentDetail.bedNo}</td>
                             </tr>
                             <tr>
-                                <td colSpan={6}>
-                                    <br />
-                                    Patient is being treated By
-                                </td>
+                               <td colSpan={6}>
+    <br />
+    Patient is being treated by
+</td>
                             </tr>
                             <tr>
                                 <td>Doctor's Name:</td>

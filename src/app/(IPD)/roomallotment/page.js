@@ -6,7 +6,7 @@ import { GrUpdate } from "react-icons/gr";
 import PatientBasicDetails from "@/app/(components)/PatientBasicDetails";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { BaseUrl } from "../../config";
+import { baseUrl } from "../../config.js";
 import { Swal } from "sweetalert2";
 import { useSelector } from "react-redux";
 import DatePicker from "react-datepicker";
@@ -43,7 +43,7 @@ const RoomAllotmentform = () => {
     const handleRoomNoChange = async (event) => {
         try {
             debugger;
-            const response = await axios.get(`${BaseUrl}patientRoom/getvacantbed?roomNo=${event.target.value}`);
+            const response = await axios.get(`${baseUrl}patientRoom/getvacantbed?roomNo=${event.target.value}`);
             if (response.data.status == 200) {
                 setBedNo(response.data.data);
             }
@@ -61,7 +61,7 @@ const RoomAllotmentform = () => {
             let ipNo = selectedIPD[0].ipd.ipdNo;
             let patId = selectedIPD[0].ipd.patId
             const UpdatedJson = { ...inputs, ipdNo: ipNo, patId: patId };
-            const response = await axios.post(`${BaseUrl}ipdroomAllotment/saveRoom`, UpdatedJson);
+            const response = await axios.post(`${baseUrl}ipdroomAllotment/saveRoom`, UpdatedJson);
             console.log("response", response.data.data)
             if (response.status === 200) {
                 Swal.fire({ text: "Data is saved successfully", icon: "success" });
@@ -79,7 +79,7 @@ const RoomAllotmentform = () => {
 
     //table data
     const fetchApi = async () => {
-        const response = await axios.get(`${BaseUrl}ipdroomAllotment/getDetailsByIpdNo?ipdNo=${selectedIPD[0].ipd.ipdNo}`)
+        const response = await axios.get(`${baseUrl}ipdroomAllotment/getDetailsByIpdNo?ipdNo=${selectedIPD[0].ipd.ipdNo}`)
         setData(response.data.data)
     }
 
@@ -105,7 +105,7 @@ const RoomAllotmentform = () => {
         const confirmDelete = window.confirm("Are you sure you want to delete this data?");
         if (!confirmDelete) return;
         try {
-            const response = await axios.delete(`${BaseUrl}ipdroomAllotment/deleteAllotedRoom?allotmentId=${allotmentId}`);
+            const response = await axios.delete(`${baseUrl}ipdroomAllotment/deleteAllotedRoom?allotmentId=${allotmentId}`);
             if (response.status === 200) {
                 Swal.fire({ text: "Data is deleted successfully", icon: "success" });
                 fetchApi() // Refresh the table data after deletion
@@ -121,7 +121,7 @@ const RoomAllotmentform = () => {
     const handleRoomTypeChange = async (event) => {
         try {
             debugger;
-            const response = await axios.get(`${BaseUrl}patientRoom/getRoomByRoomType?roomType=${event.target.value}`);
+            const response = await axios.get(`${baseUrl}patientRoom/getRoomByRoomType?roomType=${event.target.value}`);
             if (response.data.status == 200) {
                 setRoomNo(response.data.data);
             }

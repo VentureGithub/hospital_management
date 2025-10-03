@@ -139,8 +139,8 @@ const Xrayform = () => {
                                 <label className="block text-sm mb-2">category Name</label>
                             <select onChange={handleChange1} className="w-full px-4 py-2 text-sm border rounded-lg focus:outline-none">
                                     <option>select service</option>
-                                    {dataa.map((data) => (
-                                        <option value={data.testCategoryId}>{data.categoryName}</option>
+                                    {dataa.map((data,index) => (
+                                        <option  key={index} value={data.testCategoryId}>{data.categoryName}</option>
                                     ))}
                                 </select>
                         </div>

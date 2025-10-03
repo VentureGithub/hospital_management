@@ -183,8 +183,8 @@ const Deductionform = () => {
                                 <select onChange={handleEmp}
                                     className="w-full px-4 py-2 border text-sm rounded-lg focus:outline-none">
                                     <option>select Employee</option>
-                                    {emp?.map((Emp) => (
-                                        <option value={Emp.empCode}>{Emp.empName}</option>
+                                    {emp?.map((Emp,index) => (
+                                        <option key={index} value={Emp.empCode}>{Emp.empName}</option>
                                     ))}
                                 </select>
                             </div>
@@ -197,8 +197,8 @@ const Deductionform = () => {
                                 <select onChange={handleDep}
                                     className="w-full px-4 py-2 border text-sm rounded-lg focus:outline-none">
                                     <option>select Department</option>
-                                    {dep?.map((dep) => (
-                                        <option value={dep.deptId}>{dep.depName}</option>
+                                    {dep?.map((dep,index) => (
+                                        <option key={index} value={dep.deptId}>{dep.depName}</option>
                                     ))}
                                 </select>
                             </div>

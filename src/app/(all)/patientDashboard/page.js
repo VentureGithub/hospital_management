@@ -52,7 +52,7 @@ const PatientDashboard = () => {
                 <div className="flex flex-col md:flex-row justify-between mb-4">
                     <input
                         type="text"
-                        placeholder="Search 'Patients'"
+                        placeholder="Search Patients"
                         className="border p-2 rounded mb-2 md:mb-0 md:mr-2 flex-1"
                     />
                     <select className="border p-2 rounded mb-2 md:mb-0 md:mr-2 flex-1">

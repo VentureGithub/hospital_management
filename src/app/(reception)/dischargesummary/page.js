@@ -706,8 +706,8 @@ const DischargeSummaryform = () => {
 
                                 <select onChange={handleDiagnosis} className="w-full px-4 py-2 border rounded-lg focus:outline-none text-sm" defaultValue="opt">
                                     <option value="opt">Select Diagnosis</option>
-                                    {diagnosis.map((data) => (
-                                        <option value={data.diagnosisId} >{data.diagnosis}</option>
+                                    {diagnosis.map((data , index) => (
+                                        <option  key={index} value={data.diagnosisId} >{data.diagnosis}</option>
                                     ))}
                                 </select>
 
@@ -718,8 +718,8 @@ const DischargeSummaryform = () => {
 
                                 <select onChange={handleDiagnosis} className="text-sm w-full px-4 py-2 border rounded-lg focus:outline-none" defaultValue="opt">
                                     <option value="opt">management/Operation</option>
-                                    {diagnosis.map((data) => (
-                                        <option value={data.diagnosisId}>{data.managementOperation}</option>
+                                    {diagnosis.map((data ,index ) => (
+                                        <option key={index} value={data.diagnosisId}>{data.managementOperation}</option>
                                     ))}
                                 </select>
 
@@ -729,8 +729,8 @@ const DischargeSummaryform = () => {
 
                                 <select onChange={handleDiagnosis} className="w-full px-4 py-2 border rounded-lg focus:outline-none" defaultValue="opt">
                                     <option value="opt">Select Advice</option>
-                                    {diagnosis.map((data) => (
-                                        <option value={data.diagnosisId} >{data.advice}</option>
+                                    {diagnosis.map((data , index) => (
+                                        <option key={index} value={data.diagnosisId} >{data.advice}</option>
                                     ))}
                                 </select>
 
@@ -744,8 +744,8 @@ const DischargeSummaryform = () => {
 
                                 <select onChange={handleSalt} className="text-sm w-full px-4 py-2 border rounded-lg focus:outline-none" defaultValue="opt">
                                     <option value="opt">Select Medicine</option>
-                                    {salt?.map((data) => (
-                                        <option value={data.saltmasterIdLong} >{data.saltNameString}</option>
+                                    {salt?.map((data ,index) => (
+                                        <option key={index} value={data.saltmasterIdLong} >{data.saltNameString}</option>
                                     ))}
                                 </select>
 
@@ -755,8 +755,8 @@ const DischargeSummaryform = () => {
 
                                 <select onChange={handleTime} className="text-sm w-full px-4 py-2 border rounded-lg focus:outline-none" defaultValue="opt">
                                     <option value="opt">Select Time</option>
-                                    {time.map((data) => (
-                                        <option value={data.medicineTimeMasterId} >{data.medicineTime}</option>
+                                    {time.map((data ,index) => (
+                                        <option key={index} value={data.medicineTimeMasterId} >{data.medicineTime}</option>
                                     ))}
                                 </select>
 

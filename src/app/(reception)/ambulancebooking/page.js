@@ -367,8 +367,8 @@ const Insuranceform = () => {
                                 // onBlur={formik.handleBlur}
                                 className="w-full text-gray-700 px-4 py-2 text-sm border rounded-lg focus:outline-none">
                                 <option>select Discount</option>
-                                {receptionDiscount?.map((data) => (
-                                    <option value={data.discountId}>{`${data.discountPercentage}%`}</option>
+                                {receptionDiscount?.map((data,index) => (
+                                    <option key={index} value={data.discountId}>{`${data.discountPercentage}%`}</option>
                                 ))}
                             </select>
                         </div>
@@ -422,8 +422,8 @@ const Insuranceform = () => {
                                 onChange={isEdit ? undefined : handleAmbulance}
                                 className="w-full px-4 py-2 border rounded-lg focus:outline-none text-sm">
                                 <option>select Ambulance</option>
-                                {ambulance?.map((ambulance) => (
-                                    <option value={ambulance.ambulanceId}>{ambulance.ambulanceNumber}{ambulance.driverPhoneNo}</option>
+                                {ambulance?.map((ambulance,index) => (
+                                    <option key={index} value={ambulance.ambulanceId}>{ambulance.ambulanceNumber}{ambulance.driverPhoneNo}</option>
                                 ))}
                             </select>
                         </div>

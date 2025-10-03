@@ -280,8 +280,8 @@ const TestBookingform = () => {
                                 onChange={handleChangeAllIpd}
                             >
                                 <option>Select an option</option>
-                                {allIpdData.map((data) => (
-                                    <option value={data.ipdNo}>{data.ipdNo}</option>
+                                {allIpdData.map((data,index) => (
+                                    <option  key={index} value={data.ipdNo}>{data.ipdNo}</option>
                                 ))}
 
                             </select>

@@ -97,8 +97,8 @@ const Medicinemasterstoreform = () => {
                             <div className="w-full sm:w-[80%]">
                         <select onChange={handleCatSel} className="w-full px-4 py-2 border rounded-lg focus:outline-none">
                             <option >select an item</option>
-                            {category?.map((item) => (
-                                <option value={item.medicineCategoryId}>{item.categoryName}</option>
+                            {category?.map((item,index) => (
+                                <option key={index} value={item.medicineCategoryId}>{item.categoryName}</option>
 
                             ))}
 

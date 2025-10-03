@@ -229,8 +229,8 @@ const SaleReturnReportForm = () => {
                             <label className="block text-sm font-medium text-gray-700">company </label>
                             <select onChange={handleCompany} className="mt-1 block w-full p-2 border border-gray-300 rounded-md">
                                 <option >select  Company</option>
-                                {company.map((Company) => (
-                                    <option value={Company.companyId}>{Company.companyName}</option>
+                                {company.map((Company,index) => (
+                                    <option key={index} value={Company.companyId}>{Company.companyName}</option>
                                 ))}
                             </select>
                         </div>
@@ -238,8 +238,8 @@ const SaleReturnReportForm = () => {
                             <label className="block text-sm font-medium text-gray-700">Item Name </label>
                             <select onChange={handleItem} className="mt-1 block w-full p-2 border border-gray-300 rounded-md">
                                 <option >select  Item</option>
-                                {item.map((item) => (
-                                    <option value={item.medicineId}>{item.medicineName}</option>
+                                {item.map((item,index) => (
+                                    <option key={index} value={item.medicineId}>{item.medicineName}</option>
                                 ))}
                             </select>
                         </div>

@@ -264,8 +264,8 @@ const ItemMasterform = () => {
                             /> */}
                             <select onChange={handleCategory} className="w-full px-4 py-2 text-sm border rounded-lg focus:outline-none">
                                 <option >select  Category</option>
-                                {category?.map((Category) => (
-                                    <option value={Category.medicineCategoryId}>{Category.categoryName}</option>
+                                {category?.map((Category,index) => (
+                                    <option  key={index} value={Category.medicineCategoryId}>{Category.categoryName}</option>
                                 ))}
                             </select>
                         </div>
@@ -279,8 +279,8 @@ const ItemMasterform = () => {
                             /> */}
                             <select onChange={handleCompany} className="w-full px-4 py-2 text-sm border rounded-lg focus:outline-none">
                                 <option >select  Company</option>
-                                {company.map((Company) => (
-                                    <option value={Company.companyId}>{Company.companyName}</option>
+                                {company.map((Company,index) => (
+                                    <option  key={index} value={Company.companyId}>{Company.companyName}</option>
                                 ))}
                             </select>
                         </div>
@@ -300,8 +300,8 @@ const ItemMasterform = () => {
                             <label className="block text-gray-700 text-sm">HSN / SAC</label>
                             <select onChange={handleHSN} className="w-full text-sm px-4 py-2 border rounded-lg focus:outline-none">
                                 <option >select  item</option>
-                                {hsn.map((hsn) => (
-                                    <option value={hsn.hsnIdLong}>{hsn.hsnCodeString}</option>
+                                {hsn.map((hsn,index) => (
+                                    <option key={index} value={hsn.hsnIdLong}>{hsn.hsnCodeString}</option>
                                 ))}
                             </select>
                         </div>
@@ -310,8 +310,8 @@ const ItemMasterform = () => {
                             <label className="block text-gray-700 text-sm">Tax Slab </label>
                             <select onChange={handleTax} className="w-full text-sm px-4 py-2 border rounded-lg focus:outline-none">
                                 <option >select  Tax</option>
-                                {tax.map((hsn) => (
-                                    <option value={hsn.taxId}>{hsn.tax}</option>
+                                {tax.map((hsn,index) => (
+                                    <option  key={index} value={hsn.taxId}>{hsn.tax}</option>
                                 ))}
                             </select>
                         </div>

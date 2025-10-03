@@ -210,8 +210,8 @@ const handleFloor = (e) => {
                             <label className="block text-gray-700 text-sm">Floor Name</label>
                             <select onChange={handleFloor} className="w-full text-sm px-4 py-2 border rounded-lg focus:outline-none">
                                 <option>select floor Name</option>
-                                {floor?.map((floor) => (
-                                    <option value={floor.floorNo} >{floor.floorName}</option>
+                                {floor?.map((floor ,index) => (
+                                    <option key={index} value={floor.floorNo} >{floor.floorName}</option>
                                 ))}
                             </select>
                         </div>
@@ -233,8 +233,8 @@ const handleFloor = (e) => {
                             <label className="block text-gray-700 text-sm">Item Name</label>
                             <select onChange={handleItem} className="w-full text-sm px-4 py-2 border rounded-lg focus:outline-none">
                                 <option>select item Name</option>
-                                {item?.map((item) => (
-                                    <option value={item.itemId} >{item.itemName}</option>
+                                {item?.map((item ,index) => (
+                                    <option key={index} value={item.itemId} >{item.itemName}</option>
                                 ))}
                             </select>
                         </div>

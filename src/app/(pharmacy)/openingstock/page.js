@@ -184,8 +184,8 @@ const Openingform = () => {
                           
                             <select onChange={handleCompany} className="w-full text-sm px-4 py-2 border rounded-lg focus:outline-none">
                                 <option >select  Company</option>
-                                {company.map((Company) => (
-                                    <option value={Company.companyId}>{Company.companyName}</option>
+                                {company.map((Company,index) => (
+                                    <option  key={index} value={Company.companyId}>{Company.companyName}</option>
                                 ))}
                             </select>
                         </div>
@@ -193,8 +193,8 @@ const Openingform = () => {
                             <label className="block text-gray-700 text-sm">Item Name </label>
                             <select onChange={handleItem} className="w-full text-sm px-4 py-2 border rounded-lg focus:outline-none">
                                 <option >select  Item</option>
-                                {item.map((item) => (
-                                    <option value={item.medicineId}>{item.medicineName}</option>
+                                {item.map((item,index) => (
+                                    <option key={index} value={item.medicineId}>{item.medicineName}</option>
                                 ))}
                             </select>
                         </div>
