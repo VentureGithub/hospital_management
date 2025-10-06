@@ -123,6 +123,22 @@ const Categoryform = () => {
                 <div className="text-xs text-sky-700 bg-sky-50 px-3 py-1 rounded-md border border-sky-100">Pharmacy • Inventory</div>
             </div>
 
+            {/* Quick Stats */}
+            <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="bg-white border border-sky-100 rounded-lg px-4 py-3 shadow-sm">
+                    <p className="text-[11px] text-gray-500">Total Categories</p>
+                    <p className="text-lg font-semibold text-sky-800">{data?.length || 0}</p>
+                </div>
+                <div className="bg-white border border-sky-100 rounded-lg px-4 py-3 shadow-sm">
+                    <p className="text-[11px] text-gray-500">Showing</p>
+                    <p className="text-lg font-semibold text-sky-800">{paginateData(filteredData)?.length || 0}</p>
+                </div>
+                <div className="bg-white border border-sky-100 rounded-lg px-4 py-3 shadow-sm">
+                    <p className="text-[11px] text-gray-500">Page</p>
+                    <p className="text-lg font-semibold text-sky-800">{page} / {Math.max(1, Math.ceil((filteredData?.length || 0) / itemsPerPage))}</p>
+                </div>
+            </div>
+
             <div className='py-4'>
                 <form onSubmit={formik.handleSubmit} className='lg:w-[50%] md:w-[100%] sm:w-[100%]'>
                     <div className="grid grid-cols-1 gap-3 m-2 ">
@@ -166,10 +182,10 @@ const Categoryform = () => {
                                 placeholder="Search category names..."
                                 value={voucherNoFilter}
                                 onChange={handleFilter}
-                                className="pl-9 pr-3 py-2 w-full border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-300"
+                                className="pl-9 pr-3 py-2 w-full border border-gray-200 rounded-lg bg-white/70 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-sky-300 transition"
                             />
                         </div>
-                        <div className="text-xs text-gray-500">{filteredData?.length || 0} categories</div>
+                        <div className="text-xs text-gray-600 bg-sky-50 border border-sky-100 px-3 py-1 rounded-md">{filteredData?.length || 0} categories</div>
                     </div>
                     {isLoading && (
                         <div className="p-6 text-center text-gray-500">Loading categories...</div>
@@ -181,17 +197,26 @@ const Categoryform = () => {
                         <div className="w-full" style={{ maxHeight: "400px", overflowY: "auto" }}>
                             <table className="table-auto w-full border border-gray-100 border-collapse shadow-sm rounded-md overflow-hidden">
                                 <thead className="sticky top-0 z-10">
-                                    <tr className="text-center bg-sky-50/70 backdrop-blur">
-                                        <th className="px-4 py-2 border border-gray-100 text-sky-700 text-xs tracking-wide">Sr</th>
-                                        <th className="px-4 py-2 border border-gray-100 text-sky-700 text-xs tracking-wide">Category Name</th>
+                                    <tr className="text-center bg-gradient-to-r from-sky-50 to-sky-100 backdrop-blur">
+                                        <th className="px-4 py-2 border border-gray-100 text-sky-700 text-xs tracking-wide">#</th>
+                                        <th className="px-4 py-2 border border-gray-100 text-sky-700 text-xs tracking-wide text-left">Category Name</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {Array.isArray(filteredData) && filteredData?.length > 0 ? (
                                         paginateData(filteredData).map((transaction, index) => (
-                                            <tr key={index} className="border border-gray-100 text-center hover:bg-sky-50/40 transition">
-                                                <td className="px-4 py-3 border border-gray-100 text-sm">{(page - 1) * itemsPerPage + index + 1}</td>
-                                                <td className="px-4 py-3 border border-gray-100 text-sm text-gray-700">{transaction.categoryName}</td>
+                                            <tr key={index} className="border border-gray-100 hover:bg-sky-50/40 transition">
+                                                <td className="px-4 py-3 border border-gray-100 text-sm text-center">
+                                                    <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-sky-50 text-sky-700 font-semibold border border-sky-200">
+                                                        {(page - 1) * itemsPerPage + index + 1}
+                                                    </span>
+                                                </td>
+                                                <td className="px-4 py-3 border border-gray-100 text-sm text-gray-800">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="inline-block w-2 h-2 rounded-full bg-sky-500"></span>
+                                                        <span className="font-medium">{transaction.categoryName}</span>
+                                                    </div>
+                                                </td>
                                             </tr>
                                         ))
                                     ) : (
@@ -214,21 +239,21 @@ const Categoryform = () => {
                     {/* Previous Button */}
                     <button
                         onClick={handlePreviousPage}
-                        className="bg-sky-600 text-white px-3 py-2 rounded-md hover:bg-sky-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="bg-sky-600 text-white px-3 py-2 rounded-full hover:bg-sky-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
                         disabled={page === 1}
                     >
                         Previous
                     </button>
 
                     {/* Page Info */}
-                    <div className="text-center text-sm text-gray-600">
+                    <div className="text-center text-sm text-gray-600 bg-sky-50 border border-sky-100 px-3 py-1 rounded-full">
                         Page {page} of {Math.max(1, Math.ceil((filteredData?.length || 0) / itemsPerPage))}
                     </div>
 
                     {/* Next Button */}
                     <button
                         onClick={handleNextPage}
-                        className="bg-sky-600 text-white px-3 py-2 rounded-md hover:bg-sky-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="bg-sky-600 text-white px-3 py-2 rounded-full hover:bg-sky-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
                         disabled={page * itemsPerPage >= filteredData?.length}
                     >
                         Next

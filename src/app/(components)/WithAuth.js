@@ -9,16 +9,20 @@ const withAuth = (WrappedComponent, allowedRoles) => {
 
         useEffect(() => {
             const token = localStorage.getItem('accessToken');
-            const role = localStorage.getItem('role');
+            const rawRole = localStorage.getItem('role');
+            const role = rawRole ? rawRole.toString().trim().toUpperCase() : '';
 
             if (!token) {
                 router.push('/');
                 return;
             }
 
-            if (role && !allowedRoles.includes(role)) {
-                router.push('/unauthorized');
-                return;
+            if (Array.isArray(allowedRoles) && allowedRoles.length > 0) {
+                const normalizedAllowed = allowedRoles.map(r => r.toString().trim().toUpperCase());
+                if (role && !normalizedAllowed.includes(role)) {
+                    router.push('/UnauthorisedPage.js');
+                    return;
+                }
             }
         }, [router]);
 
