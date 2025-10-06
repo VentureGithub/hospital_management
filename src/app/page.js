@@ -1,31 +1,53 @@
 "use client";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import axios from "axios"; 
 import { FaUser, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
-import Link from "next/link";
 import apiClient from "./config";
 
 const Login = () => {
   const router = useRouter();
+  const [inputs, setInputs] = useState({ email: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
+  const [hospital, setHospital] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [checkingAuth, setCheckingAuth] = useState(true); // NEW
+
+  // ✅ Verify token from backend before redirecting
+  const verifyToken = async () => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      setCheckingAuth(false);
+      return;
+    }
+    try {
+      const response = await apiClient.get("/user/verify", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.status === 200 && response.data?.valid) {
+        // Redirect only if token is still valid
+        const role = localStorage.getItem("role");
+        if (role === "SUPERADMIN" || role === "ADMIN") router.push("/dash");
+        else if (role === "RECEPTION") router.push("/receptiondashboard");
+      } else {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("role");
+      }
+    } catch (err) {
+      console.error("Token verification failed:", err);
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("role");
+    } finally {
+      setCheckingAuth(false);
+    }
+  };
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-    const role = localStorage.getItem("role");
-    if (accessToken && role) {
-      router.push("/dash");
-    }
+    verifyToken();
   }, []);
-
-  const [inputs, setInputs] = useState({
-    email: "",
-    password: "",
-  });
 
   const handleInput = (e) => {
     const { name, value } = e.target;
-    setInputs((prevData) => ({ ...prevData, [name]: value }));
+    setInputs((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (event) => {
@@ -45,12 +67,13 @@ const Login = () => {
         localStorage.setItem("accessToken", response.data.data.accessToken);
         localStorage.setItem("role", response.data.data.role);
         alert("Successfully Logged In");
+
         if (
-          response?.data?.data?.role === "SUPERADMIN" ||
-          response?.data?.data?.role === "ADMIN"
+          response.data.data.role === "SUPERADMIN" || response.data.data.role === "Superadmin" ||
+          response.data.data.role === "ADMIN" || response.data.data.role === "Admin"
         ) {
           router.push("/dash");
-        } else if (response?.data?.data?.role === "RECEPTION") {
+        } else if (response.data.data.role === "RECEPTION") {
           router.push("/receptiondashboard");
         }
       } else {
@@ -62,42 +85,36 @@ const Login = () => {
     }
   };
 
-  const [showPassword, setShowPassword] = useState(false);
-
   const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
+    setShowPassword((prev) => !prev);
   };
 
-  const [hospital, setHospital] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
   const fetchHospital = async () => {
     try {
-        setIsLoading(true);
-        const response = await apiClient.get("hospitalProfile/getDataHospital");
-        console.log("API Response:", response);
-
-        // Extract hospital name from response
-        if (
-            response.data &&
-            Array.isArray(response.data.data) &&
-            response.data.data.length > 0 &&
-            response.data.data[0].hospitalName
-        ) {
-            setHospital(response.data.data[0].hospitalName);
-        } else {
-            setHospital("Unknown Hospital");
-        }
+      setIsLoading(true);
+      const response = await apiClient.get("hospitalProfile/getDataHospital");
+      if (
+        response.data &&
+        Array.isArray(response.data.data) &&
+        response.data.data.length > 0
+      ) {
+        setHospital(response.data.data[0].hospitalName);
+      } else {
+        setHospital("Unknown Hospital");
+      }
     } catch (error) {
-        console.error("Error fetching hospital data:", error);
-        setHospital("Error fetching hospital name");
+      console.error("Error fetching hospital data:", error);
+      setHospital("Error fetching hospital name");
     } finally {
-        setIsLoading(false);
+      setIsLoading(false);
     }
-};
+  };
 
-useEffect(() => {
+  useEffect(() => {
     fetchHospital();
-}, []);
+  }, []);
+
+  if (checkingAuth) return null; // Prevent flashing redirect before verification
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
@@ -111,7 +128,7 @@ useEffect(() => {
           <div className="absolute inset-0 flex justify-center mt-9">
             <div className="mt-6">
               <h1 className="text-white text-2xl font-bold text-center px-4">
-              {isLoading ? "Hosptal " : hospital}
+                {isLoading ? "Loading..." : hospital}
               </h1>
               <p className="mt-2 text-lg text-white flex justify-center">
                 Your Health, Our Priority
@@ -119,8 +136,11 @@ useEffect(() => {
             </div>
           </div>
         </div>
+
         <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-6">
-          <h3 className="text-2xl font-bold text-gray-800 mb-6">Welcome Back</h3>
+          <h3 className="text-2xl font-bold text-gray-800 mb-6">
+            Welcome Back
+          </h3>
           <form className="w-full max-w-md space-y-6" onSubmit={handleSubmit}>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -167,14 +187,6 @@ useEffect(() => {
             >
               Log In
             </button>
-            {/* <div className="text-center">
-              <Link
-                href="/registration"
-                className="text-sm text-gray-600 hover:text-blue-500 transition-colors"
-              >
-                Create an Account
-              </Link>
-            </div> */}
           </form>
         </div>
       </div>
@@ -183,4 +195,3 @@ useEffect(() => {
 };
 
 export default Login;
-
