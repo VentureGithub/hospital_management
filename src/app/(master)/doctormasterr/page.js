@@ -2,7 +2,7 @@
 import LayoutForm from "../../layouts/layoutForm";
 import Heading from "../../(components)/heding";
 import { useEffect, useState } from "react";
-import { FaPencilAlt, FaPlus, FaTrash ,FaStethoscope,FaSync,FaSave } from "react-icons/fa";
+import { FaPencilAlt, FaPlus, FaTrash ,FaStethoscope,FaSync,FaSave ,FaExclamationCircle } from "react-icons/fa";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import apiClient from "@/app/config";
