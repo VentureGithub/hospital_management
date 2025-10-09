@@ -1,264 +1,237 @@
 'use client';
 import LayoutForm from "../../layouts/layoutForm";
 import Heading from "../../(components)/heding";
-import apiClient from "@/app/config";
+import { FaSearch, FaSync, FaSave, FaPen } from "react-icons/fa";
+import apiClient from "../../config";
 import withAuth from '@/app/(components)/WithAuth';
-import { toast } from 'sonner';
 import { useState } from "react";
+import { toast } from "sonner";
 
 export function PurchaseInvoice() {
-    return (
-        <LayoutForm>
-            <IncrementPromotion />
-            
-        </LayoutForm>
-    );
+  return (
+    <LayoutForm>
+      <IncrementPromotion />
+    </LayoutForm>
+  );
 }
 
 const IncrementPromotion = () => {
-    const [isEdit, setIsEdit] = useState(false);
-    const [inputs, setInputs] = useState({
-        incrementId: 0,
-        empCode: "",
-        empName: "",
-        salaryIncDate: "",
-        depName: "",
-        designationName: "",
-        joiningDate: "",
-        dateOfBirth: "",
-        jobType: "",
-        remark: "",
-        phnNo: "",
-        basicSalary: 0,
-        extraSalary: 0,
-        incremtntAmnt: 0
-    });
+  const [isEdit, setIsEdit] = useState(false);
+  const [inputs, setInputs] = useState({
+    incrementId: 0,
+    empCode: "",
+    empName: "",
+    salaryIncDate: "",
+    depName: "",
+    designationName: "",
+    joiningDate: "",
+    dateOfBirth: "",
+    jobType: "",
+    remark: "",
+    phnNo: "",
+    basicSalary: 0,
+    extraSalary: 0,
+    incremtntAmnt: 0,
+  });
 
-    const [emps, setEmps] = useState({});
-    const [searchId, setSearchId] = useState("");
+  const [emps, setEmps] = useState({});
+  const [searchId, setSearchId] = useState("");
 
-    const fetchEmps = async (empCode) => {
-        try {
-            const response = await apiClient.get(`emp/getData/byId?empCode=${empCode}`);
-            if (response.status === 200) {
-                const employeeData = response.data.data || {};
-                setEmps(employeeData);
-
-                // Fill inputs with the fetched employee data
-                setInputs((prevInputs) => ({
-                    ...prevInputs,
-                    empCode: employeeData.empCode || "",
-                    empName: employeeData.empName || "",
-                    basicSalary: employeeData.basicSalary || 0, // Fill in the basic salary
-                    // Add other fields as necessary
-                }));
-
-                console.log(employeeData.gender); // Assuming this line is still relevant
-            }
-        } catch (error) {
-            console.error('Error fetching employee data:', error);
-        }
-    };
-
-    const handleSearch = () => {
-        fetchEmps(searchId);
-    };
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setInputs(prevInputs => ({
-            ...prevInputs,
-            [name]: value
+  const fetchEmps = async (empCode) => {
+    try {
+      const { data } = await apiClient.get(`emp/getData/byId?empCode=${empCode}`);
+      if (data.status === 200 && data.data) {
+        setEmps(data.data);
+        setInputs(prev => ({
+          ...prev,
+          empCode: data.data.empCode || "",
+          empName: data.data.empName || "",
+          salaryIncDate: "",
+          depName: data.data.depName || "",
+          designationName: data.data.designationName || "",
+          joiningDate: data.data.joiningDate || "",
+          dateOfBirth: data.data.dateOfBirth || "",
+          jobType: data.data.jobType || "",
+          phnNo: data.data.phnNo || "",
+          basicSalary: data.data.basicSalary || 0,
+          extraSalary: 0,
+          incremtntAmnt: 0,
+          remark: ""
         }));
-    };
+      } else {
+        toast.error("Employee not found");
+        setEmps({});
+      }
+    } catch {
+      toast.error("Failed to fetch employee data");
+      setEmps({});
+    }
+  };
 
-    const fetchApi = async () => {
-        try {
-            const response = await apiClient.get("salaryIncrement/getData"); // Adjust endpoint
-            setData(response.data);
-        } catch (error) {
-            console.error("Error fetching data:", error);
-        }
-    };
+  const handleSearch = () => {
+    if (searchId.trim()) {
+      fetchEmps(searchId.trim());
+    } else {
+      toast.error("Please enter an Employee ID to search");
+    }
+  };
 
-    const handleSave = async (e) => {
-        e.preventDefault();
-        try {
-            let response;
-            if (isEdit) {
-                response = await apiClient.put(`salaryIncrement/updateData`, inputs);
-                if (response.status === 200) {
-                    toast.success("Data updated successfully");
-                    setIsEdit(false);
-                } else {
-                    toast.error(`Update failed! Status: ${ response.status }`);
-                }
-            } else {
-                response = await apiClient.post("salaryIncrement/saveIncrementData", inputs);
-                if (response.status === 200) {
-                    toast.success("Data saved successfully");
-                } else {
-                    toast.error(`Save failed! Status: ${ response.status }`);
-                }
-            }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setInputs(prev => ({ ...prev, [name]: value }));
+  };
 
-            // Fetch updated data and reset inputs
-            fetchApi();
-            setInputs({
-                incrementId: 0,
-                empCode: "",
-                empName: "",
-                salaryIncDate: "",
-                depName: "",
-                designationName: "",
-                joiningDate: "",
-                dateOfBirth: "",
-                jobType: "",
-                remark: "",
-                phnNo: "",
-                basicSalary: 0,
-                extraSalary: 0,
-                incremtntAmnt: 0
-            });
-        } catch (error) {
-            console.error("Error handling save operation:", error);
-            toast.error(`An error occurred: ${ error.response ? error.response.data : error.message }`);
-        }
-    };
-
-    const handleUpdate = (salaryincrement) => {
+  const handleSave = async (e) => {
+    e.preventDefault();
+    try {
+      let response;
+      if (isEdit) {
+        response = await apiClient.put(`salaryIncrement/update`, inputs);
+      } else {
+        response = await apiClient.post(`salaryIncrement/create`, inputs);
+      }
+      if (response.status === 200) {
+        toast.success(isEdit ? "Updated successfully" : "Saved successfully");
+        setIsEdit(false);
+        setEmps({});
         setInputs({
-            incrementId: salaryincrement.incrementId,
-            empCode: salaryincrement.empCode,
-            empName: salaryincrement.empName,
-            salaryIncDate: salaryincrement.salaryIncDate,
-            depName: salaryincrement.depName,
-            designationName: salaryincrement.designationName,
-            joiningDate: salaryincrement.joiningDate,
-            dateOfBirth: salaryincrement.dateOfBirth,
-            jobType: salaryincrement.jobType,
-            remark: salaryincrement.remark,
-            phnNo: salaryincrement.phnNo,
-            basicSalary: salaryincrement.basicSalary,
-            extraSalary: salaryincrement.extraSalary,
-            incremtntAmnt: salaryincrement.incremtntAmnt
+          incrementId: 0, empCode: "", empName: "", salaryIncDate: "", depName: "", designationName: "",
+          joiningDate: "", dateOfBirth: "", jobType: "", remark: "", phnNo: "", basicSalary: 0, extraSalary: 0, incremtntAmnt: 0
         });
-        setIsEdit(true);
-    };
+      } else {
+        toast.error("Operation failed, please try again");
+      }
+    } catch {
+      toast.error("Error occurred while saving data");
+    }
+  };
 
-    return (
-        <div className='p-4 bg-gray-50 mt-6 ml-6  rounded-md shadow-xl'>
-               <Heading headingText="Employee Salary Increment" />
-            {/* Search Section */}
-            <div className="flex flex-col sm:flex-row justify-between items-center mb-4">
-                <div className="flex space-x-4 w-full sm:w-auto">
-                    <input
-                        type="text"
-                        className="w-full px-4 py-2 border rounded-lg focus:outline-none text-sm"
-                        placeholder="Employee Id"
-                        value={searchId}
-                        onChange={(e) => setSearchId(e.target.value)}
-                    />
-                    <button
-                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-900 text-sm"
-                        onClick={handleSearch}
-                    >
-                        Search
-                    </button>
-                </div>
-            </div>
+  const handleUpdate = (data) => {
+    setInputs({ ...data });
+    setEmps(data);
+    setIsEdit(true);
+  };
 
-            {/* Employee Details Section */}
-            <div className="mt-6 bg-white p-6 rounded-md shadow-md border">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <p><strong>Employee Code:</strong> {emps.empCode || "N/A"}</p>
-                    <p><strong>Employee Name:</strong> {emps.empName || "N/A"}</p>
-                    <p><strong>Designation:</strong> {emps.designationName || "N/A"}</p>
-                    <p><strong>Department:</strong> {emps.depName || "N/A"}</p>
-                    <p><strong>Join Date:</strong> {emps.joiningDate || "N/A"}</p>
-                    <p><strong>Job Type:</strong> {emps.jobType || "N/A"}</p>
-                    <p><strong>Mobile No:</strong> {emps.phnNo || "N/A"}</p>
-                    <p><strong>Date of Birth:</strong> {emps.dateOfBirth || "N/A"}</p>
-                </div>
-            </div>
+  const handleReset = () => {
+    setInputs({
+      incrementId: 0, empCode: "", empName: "", salaryIncDate: "", depName: "", designationName: "",
+      joiningDate: "", dateOfBirth: "", jobType: "", remark: "", phnNo: "", basicSalary: 0, extraSalary: 0, incremtntAmnt: 0
+    });
+    setEmps({});
+    setIsEdit(false);
+    setSearchId("");
+  };
 
-            {/* Increment/Promotion Details Section */}
-            <h3 className="text-lg font-semibold text-blue-500 p-2 mt-4">Increment or Promotion Detail</h3>
-            <form onSubmit={handleSave}>
-                <div className="bg-white p-6 rounded-md shadow-md border grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 ">Increment Date</label>
-                        <input
-                            type="date"
-                            name="salaryIncDate"
-                            value={inputs.salaryIncDate}
-                            onChange={handleChange}
-                            className="mt-1 block w-full p-2 border text-sm border-gray-300 rounded-md"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Remark</label>
-                        <input
-                            type="text"
-                            name="remark"
-                            value={inputs.remark}
-                            onChange={handleChange}
-                            className="mt-1 block w-full p-2 text-sm border border-gray-300 rounded-md"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Basic Salary</label>
-                        <input
-                            type="number"
-                            name="basicSalary"
-                            value={inputs.basicSalary}
-                            onChange={handleChange}
-                            className="mt-1 block w-full p-2 text-sm border border-gray-300 rounded-md"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Extra Amount</label>
-                        <input
-                            type="number"
-                            name="extraSalary"
-                            value={inputs.extraSalary}
-                            onChange={handleChange}
-                            className="mt-1 block w-full p-2 text-sm border border-gray-300 rounded-md"
-                        />
-                    </div>
-                </div>
+  return (
+    <div className="p-6 rounded-xl shadow-xl border border-sky-100 bg-gradient-to-br from-sky-50 to-white ml-6 mt-6">
+      <Heading headingText="Employee Salary Increment" />
 
-                <div className="mt-6 flex flex-col sm:flex-row justify-start gap-4">
-                    <button className="bg-green-500 text-white text-sm px-4 py-2 rounded-md hover:bg-green-600" type="submit">
-                        Save
-                    </button>
+      {/* Search bar */}
+      <div className="flex items-center space-x-3 mt-4">
+        <input
+          type="text"
+          placeholder="Enter Employee ID"
+          value={searchId}
+          onChange={e => setSearchId(e.target.value)}
+          className="flex-grow p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-300"
+        />
+        <button
+          onClick={handleSearch}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center space-x-1"
+        >
+          <FaSearch />
+          <span>Search</span>
+        </button>
+      </div>
 
-                    <button className="bg-blue-500 text-white text-sm px-4 py-2 rounded-md hover:bg-blue-600" onClick={() => {
-                        setInputs({
-                            incrementId: 0,
-                            empCode: "",
-                            empName: "",
-                            salaryIncDate: "",
-                            depName: "",
-                            designationName: "",
-                            joiningDate: "",
-                            dateOfBirth: "",
-                            jobType: "",
-                            remark: "",
-                            phnNo: "",
-                            basicSalary: 0,
-                            extraSalary: 0,
-                            incremtntAmnt: 0
-                        });
-                        setEmps({});
-                    }}>
-                        Refresh
-                    </button>
-                </div>
-            </form>
+      {/* Employee Info */}
+      {emps.empCode && (
+        <div className="mt-6 bg-white p-6 rounded-lg shadow-sm border border-sky-100 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-700">
+          <div><strong>Code:</strong> {emps.empCode}</div>
+          <div><strong>Name:</strong> {emps.empName}</div>
+          <div><strong>Department:</strong> {emps.depName}</div>
+          <div><strong>Designation:</strong> {emps.designationName}</div>
+          <div><strong>Join Date:</strong> {emps.joiningDate}</div>
+          <div><strong>DOB:</strong> {emps.dateOfBirth}</div>
+          <div><strong>Job Type:</strong> {emps.jobType}</div>
+          <div><strong>Phone:</strong> {emps.phnNo}</div>
         </div>
-    );
+      )}
+
+      {/* Increment Form */}
+      <form onSubmit={handleSave} className="mt-6 space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div>
+            <label className="block mb-1 font-semibold text-gray-700">Increment Date</label>
+            <input
+              type="date"
+              name="salaryIncDate"
+              value={inputs.salaryIncDate}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-300"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-semibold text-gray-700">Remark</label>
+            <input
+              type="text"
+              name="remark"
+              value={inputs.remark}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-300"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-semibold text-gray-700">Basic Salary</label>
+            <input
+              type="number"
+              name="basicSalary"
+              value={inputs.basicSalary}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-300"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-semibold text-gray-700">Extra Salary</label>
+            <input
+              type="number"
+              name="extraSalary"
+              value={inputs.extraSalary}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-300"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-semibold text-gray-700">Increment Amount</label>
+            <input
+              type="number"
+              name="incremtntAmnt"
+              value={inputs.incremtntAmnt}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-300"
+            />
+          </div>
+        </div>
+        <div className="flex space-x-4 mt-6">
+          <button
+            type="submit"
+            className="inline-flex items-center gap-2 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+          >
+            <FaSave />
+            <span>{isEdit ? "Update" : "Save"}</span>
+          </button>
+          <button
+            type="button"
+            onClick={handleReset}
+            className="inline-flex items-center gap-2 px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
+          >
+            <FaSync />
+            <span>Reset</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  );
 };
 
-
-export default withAuth(PurchaseInvoice, ['DOCTOR', 'ADMIN', 'SUPERADMIN']);
+export default withAuth(PurchaseInvoice, ["SUPERADMIN", "ADMIN", "DOCTOR"]);

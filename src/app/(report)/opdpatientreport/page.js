@@ -1,128 +1,159 @@
-'use client';
+"use client";
 import LayoutForm from "../../layouts/layoutForm";
 import Heading from "../../(components)/heding";
 import { useState, useEffect } from "react";
 import apiClient from "@/app/config";
-import withAuth from '@/app/(components)/WithAuth';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
+import withAuth from "@/app/(components)/WithAuth";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { toast } from "sonner";
 
 export function OpdPatientReport() {
-    return (
-        <LayoutForm>
-            <OpdPatientReportform />
-        </LayoutForm>
-    );
+  return (
+    <LayoutForm>
+      <OpdPatientReportForm />
+    </LayoutForm>
+  );
 }
 
-const OpdPatientReportform = () => {
-    const [dr, setDr] = useState([]);
-    const [dept, setDept] = useState([]);
+const OpdPatientReportForm = () => {
+  const [doctors, setDoctors] = useState([]);
+  const [departments, setDepartments] = useState([]);
 
-    const fetchDr = async () => {
-        try {
-            const response = await apiClient.get(`doc/getAllDoc`);
-            setDr(response.data.data);
-        } catch (error) {
-            console.error("Error fetching doctors:", error);
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const response = await apiClient.get(`doc/getAllDoc`);
+        if (response.data && Array.isArray(response?.data?.data)) {
+          setDoctors(response?.data?.data);
+        } else {
+          setDoctors([]);
+          toast.error("Failed to load doctors");
         }
+      } catch {
+        setDoctors([]);
+        toast.error("Failed to load doctors");
+      }
+    };
+    const fetchDepartments = async () => {
+      try {
+        const response = await apiClient.get(`dep/getAllDepartment`);
+        if (response.data && Array.isArray(response.data.data)) {
+          setDepartments(response.data.data);
+        } else {
+          setDepartments([]);
+          toast.error("Failed to load departments");
+        }
+      } catch {
+        setDepartments([]);
+        toast.error("Failed to load departments");
+      }
     };
 
-    const fetchDep = async () => {
-        try {
-            const response = await apiClient.get(`dep/getAllDepartment`);
-            setDept(response.data.data);
-        } catch (error) {
-            console.error("Error fetching departments:", error);
+    fetchDoctors();
+    fetchDepartments();
+  }, []);
+
+  const formik = useFormik({
+    initialValues: {
+      selectedDr: "",
+      selectedDept: "",
+    },
+    validationSchema: Yup.object({
+      selectedDr: Yup.string().required("Doctor selection is required"),
+      selectedDept: Yup.string().required("Department selection is required"),
+    }),
+    onSubmit: async (values) => {
+      try {
+        const { selectedDr, selectedDept } = values;
+        const apiUrl = `dischargePatient/bill/OpddepartmentDoctorReport?depId=${selectedDept}&drId=${selectedDr}`;
+        const response = await apiClient.get(apiUrl, { responseType: "blob" });
+
+        if (response.status === 200) {
+          const blob = new Blob([response.data], { type: "application/pdf" });
+          const url = window.URL.createObjectURL(blob);
+          window.open(url, "_blank");
+        } else {
+          toast.error("Failed to generate PDF report");
         }
-    };
+      } catch {
+        toast.error("An error occurred generating the report");
+      }
+    },
+  });
 
-    useEffect(() => {
-        fetchDr();
-        fetchDep();
-    }, []);
+  const handleReset = () => formik.resetForm();
 
-    // Formik setup with validation
-    const formik = useFormik({
-        initialValues: {
-            selectedDr: '',
-            selectedDept: '',
-        },
-        validationSchema: Yup.object({
-            selectedDr: Yup.string().required('Doctor selection is required'),
-            selectedDept: Yup.string().required('Department selection is required'),
-        }),
-        onSubmit: async (values) => {
-            const { selectedDr, selectedDept } = values;
-            try {
-                const apiUrl = `dischargePatient/bill/OpddepartmentDoctorReport?depId=${selectedDept}&drId=${selectedDr}`;
-                const response = await apiClient.get(apiUrl, { responseType: 'blob' });
-                const blob = new Blob([response.data], { type: 'application/pdf' });
-                const url = window.URL.createObjectURL(blob);
-                window.open(url, '_blank');
-            } catch (error) {
-                console.error("Error generating PDF:", error);
-                alert("Failed to generate the PDF. Please try again.");
-            }
-        },
-    });
+  return (
+    <div className="p-6 bg-gradient-to-br from-sky-50 to-white rounded-xl shadow-xl border border-sky-100 ml-6 mt-6 max-w-3xl">
+      <Heading headingText="OPD Patient Report" />
+      <form onSubmit={formik.handleSubmit} className="mt-6 space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block mb-2 font-semibold text-sky-700">Doctor</label>
+            <select
+              name="selectedDr"
+              className={`w-full px-4 py-2 border rounded-lg focus:outline-none text-sm ${
+                formik.touched.selectedDr && formik.errors.selectedDr ? "border-red-600" : "border-gray-300"
+              }`}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.selectedDr}
+            >
+              <option value="">Select Doctor</option>
+              {doctors.map((doctor) => (
+                <option key={doctor.drId} value={doctor.drId}>
+                  {doctor.drName}
+                </option>
+              ))}
+            </select>
+            {formik.touched.selectedDr && formik.errors.selectedDr && (
+              <p className="text-red-600 text-xs mt-1">{formik.errors.selectedDr}</p>
+            )}
+          </div>
 
-    return (
-        <>
-        <div className="p-4 bg-gray-50 mt-6 ml-6 rounded-md shadow-xl">
-            <Heading headingText="OPD Patient Report" />
-            <div className='py-4'>
-                <form className='lg:w-[50%] md:w-[80%] sm:w-[100%]' onSubmit={formik.handleSubmit}>
-                    <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4">
-                        <div className="mb-5">
-                            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Doctor</label>
-                            <select 
-                                name="selectedDr"
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                value={formik.values.selectedDr}
-                                className={`w-full px-4 py-2 text-sm border rounded-lg focus:outline-none ${formik.touched.selectedDr && formik.errors.selectedDr ? 'border-red-600' : ''}`}
-                            >
-                                <option value="">Select Doctor</option>
-                                {dr.map((doctor) => (
-                                    <option key={doctor.drId} value={doctor.drId}>{doctor.drName}</option>
-                                ))}
-                            </select>
-                            {formik.touched.selectedDr && formik.errors.selectedDr && (
-                                <div className="text-red-600 text-sm">{formik.errors.selectedDr}</div>
-                            )}
-                        </div>
-
-                        <div className="mb-5">
-                            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Department</label>
-                            <select 
-                                name="selectedDept"
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                value={formik.values.selectedDept}
-                                className={`w-full px-4 py-2 text-sm border rounded-lg focus:outline-none ${formik.touched.selectedDept && formik.errors.selectedDept ? 'border-red-600' : ''}`}
-                            >
-                                <option value="">Select Department</option>
-                                {dept.map((department) => (
-                                    <option key={department.deptId} value={department.deptId}>{department.depName}</option>
-                                ))}
-                            </select>
-                            {formik.touched.selectedDept && formik.errors.selectedDept && (
-                                <div className="text-red-600 text-sm">{formik.errors.selectedDept}</div>
-                            )}
-                        </div>
-                    </div>
-
-                    <div className="flex justify-start w-full space-x-4 my-4 p-2">
-                        <button type="submit" className="bg-green-600 text-white  text-sm px-6 py-2 rounded-lg hover:bg-green-900">
-                            Print
-                        </button>
-                    </div>
-                </form>
-            </div>
+          <div>
+            <label className="block mb-2 font-semibold text-sky-700">Department</label>
+            <select
+              name="selectedDept"
+              className={`w-full px-4 py-2 border rounded-lg focus:outline-none text-sm ${
+                formik.touched.selectedDept && formik.errors.selectedDept ? "border-red-600" : "border-gray-300"
+              }`}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.selectedDept}
+            >
+              <option value="">Select Department</option>
+              {departments.map((dept) => (
+                <option key={dept.deptId} value={dept.deptId}>
+                  {dept.depName}
+                </option>
+              ))}
+            </select>
+            {formik.touched.selectedDept && formik.errors.selectedDept && (
+              <p className="text-red-600 text-xs mt-1">{formik.errors.selectedDept}</p>
+            )}
+          </div>
         </div>
-        </>
-    );
+
+        <div className="flex space-x-4 mt-6">
+          <button
+            type="submit"
+            className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center justify-center"
+          >
+            Print Report
+          </button>
+          <button
+            type="button"
+            onClick={handleReset}
+            className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
+          >
+            Reset
+          </button>
+        </div>
+      </form>
+    </div>
+  );
 };
 
-export default withAuth(OpdPatientReport, ['SUPERADMIN', 'ADMIN', 'DOCTOR']);
+export default withAuth(OpdPatientReport, ["SUPERADMIN", "ADMIN", "DOCTOR"]);

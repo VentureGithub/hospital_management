@@ -1,7 +1,7 @@
 'use client';
 import LayoutForm from "../../layouts/layoutForm";
 import Heading from "../../(components)/heding";
-import { FaPencilAlt } from "react-icons/fa";
+import { FaPencilAlt , FaExclamationCircle ,FaSync } from "react-icons/fa";
 import { toast } from 'sonner';
 import apiClient from "@/app/config";
 import withAuth from '@/app/(components)/WithAuth';
@@ -33,7 +33,6 @@ const GenerateSalaryform = () => {
             .min(3, "Group Name must be at least 3 characters long"),
         category: Yup.string()
             .required("Category is required"),
-
     });
 
     // Fetch data from the API
@@ -43,6 +42,7 @@ const GenerateSalaryform = () => {
             setData(response.data.data);
         } catch (error) {
             console.error("Error fetching data:", error);
+            toast.error("Unable to fetch account group data.");
         }
     };
 
@@ -55,31 +55,26 @@ const GenerateSalaryform = () => {
             let response;
             if (isEdit) {
                 response = await apiClient.put(`salary/updateData`, values);
-                if (response.status === 200) {
-                    toast.success("Data updated successfully");
-                    setIsEdit(false);
-                } else {
-                    toast.error(`Update failed! Status: ${response.status}`);
-                }
             } else {
                 response = await apiClient.post("accountGroup/create", values);
-                if (response.status === 200) {
-                    toast.success("Data saved successfully");
-                } else {
-                    toast.error(`Save failed! Status: ${response.status}`);
-                }
             }
 
-            fetchApi();
-            resetForm();
-            setInitialValues({
-                accountGrooupId: 0,
-                groupName: "",
-                category: "",
-            });
+            if (response.status === 200) {
+                toast.success(`Data ${isEdit ? "updated" : "saved"} successfully`);
+                setIsEdit(false);
+                fetchApi();
+                resetForm();
+                setInitialValues({
+                    accountGrooupId: 0,
+                    groupName: "",
+                    category: "",
+                });
+            } else {
+                toast.error(`Operation failed! Status: ${response.status}`);
+            }
         } catch (error) {
             console.error("Error handling save operation:", error);
-            toast.error(`An error occurred: ${error.response ? error.response.data : error.message}`);
+            toast.error(`An unexpected error occurred.`);
         }
     };
 
@@ -93,62 +88,91 @@ const GenerateSalaryform = () => {
     };
 
     return (
-        <div className='p-4 bg-gray-50 mt-6 ml-6  rounded-md shadow-xl'>
-            <Heading headingText="Account Group" />
-            <div className='py-4'>
+        <div className="p-4 bg-gradient-to-br from-sky-50 via-white to-sky-50 mt-6 ml-6 rounded-xl shadow-2xl border border-sky-100">
+            {/* Header Section */}
+            <div className="flex items-center justify-between border-b border-sky-100 pb-3">
+                <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-sky-100 text-sky-700">
+                        <FaPencilAlt size={18} />
+                    </div>
+                    <Heading headingText="Account Group" />
+                </div>
+                <div className="text-xs text-sky-700 bg-sky-50 px-3 py-1 rounded-md border border-sky-100">
+                    Master • Account Group
+                </div>
+            </div>
+
+            {/* Form Section */}
+            <div className="py-4">
                 <Formik
                     initialValues={initialValues}
                     enableReinitialize={true}
                     validationSchema={validationSchema}
                     onSubmit={handleSave}
                 >
-                    {({ values, handleChange, handleSubmit, resetForm }) => (
+                    {({ handleReset }) => (
                         <Form className="lg:w-[50%] md:w-[100%] sm:w-[100%]">
-                            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4 my-2">
+                            <div className="grid grid-cols-1 gap-3 m-2">
                                 {/* Group Name Field */}
-                                <div>
-                                        <label className="block font-semibold mb-2 text-sm">Group Name</label>
-                                        <Field
-                                            type="text"
-                                            name="groupName"
-                                            className="w-full px-4 text-sm py-2 border rounded-lg focus:outline-none"
-                                            placeholder="Enter Group Name"
-                                        />
-                                        <ErrorMessage
-                                            name="groupName"
-                                            component="div"
-                                            className="text-red-500 text-sm mt-1"
-                                        />
+                                <div className="bg-white border border-sky-100 rounded-lg p-4 shadow-sm">
+                                    <label className="block font-semibold text-sm mb-2 text-sky-800">
+                                        Group Name
+                                    </label>
+                                    <Field
+                                        type="text"
+                                        name="groupName"
+                                        placeholder="Enter Group Name"
+                                        className="w-full px-4 py-2 border text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-300 border-gray-200"
+                                    />
+                                    <ErrorMessage
+                                        name="groupName"
+                                        component="div"
+                                        className="mt-2 inline-flex items-center gap-2 text-red-600 text-xs bg-red-50 border border-red-100 px-3 py-1 rounded-md"
+                                    >
+                                        {(msg) => (
+                                            <>
+                                                <FaExclamationCircle /> {msg}
+                                            </>
+                                        )}
+                                    </ErrorMessage>
                                 </div>
 
                                 {/* Category Field */}
-                                <div>
-                                        <label className="block font-semibold mb-2 text-sm">Category</label>
-                                        <Field
-                                            as="select"
-                                            name="category"
-                                            className="w-full px-4 py-2 border rounded-lg focus:outline-none text-sm"
-                                        >
-                                            <option value="">Select an option</option>
-                                            <option value="Libilities">Libilities</option>
-                                            <option value="Assets">Assets</option>
-                                            <option value="Expense">Expense</option>
-                                            <option value="Income">Income</option>
-                                        </Field>
-                                        <ErrorMessage
-                                            name="category"
-                                            component="div"
-                                            className="text-red-500 text-sm mt-1 "
-                                        />
+                                <div className="bg-white border border-sky-100 rounded-lg p-4 shadow-sm">
+                                    <label className="block font-semibold text-sm mb-2 text-sky-800">
+                                        Category
+                                    </label>
+                                    <Field
+                                        as="select"
+                                        name="category"
+                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none text-sm border-gray-200 focus:ring-2 focus:ring-sky-300"
+                                    >
+                                        <option value="">Select an option</option>
+                                        <option value="Libilities">Libilities</option>
+                                        <option value="Assets">Assets</option>
+                                        <option value="Expense">Expense</option>
+                                        <option value="Income">Income</option>
+                                    </Field>
+                                    <ErrorMessage
+                                        name="category"
+                                        component="div"
+                                        className="mt-2 inline-flex items-center gap-2 text-red-600 text-xs bg-red-50 border border-red-100 px-3 py-1 rounded-md"
+                                    >
+                                        {(msg) => (
+                                            <>
+                                                <FaExclamationCircle /> {msg}
+                                            </>
+                                        )}
+                                    </ErrorMessage>
                                 </div>
                             </div>
 
-                            <div className="flex justify-start w-full my-4 space-x-4 text-sm p-2">
+                            {/* Buttons */}
+                            <div className="flex justify-start w-full gap-3 px-2 mt-2">
                                 <button
                                     type="button"
-                                    className="bg-gray-600 text-white px-6 py-2 text-sm rounded-lg hover:bg-gray-900"
                                     onClick={() => {
-                                        resetForm();
+                                        handleReset();
                                         setIsEdit(false);
                                         setInitialValues({
                                             accountGrooupId: 0,
@@ -156,14 +180,16 @@ const GenerateSalaryform = () => {
                                             category: "",
                                         });
                                     }}
+                                    className="inline-flex items-center gap-2 bg-slate-600 text-sm text-white px-6 py-2 rounded-lg hover:bg-slate-800 active:scale-[.99] transition"
                                 >
-                                    Refresh
+                                    <FaSync /> Refresh
                                 </button>
+
                                 <button
                                     type="submit"
-                                    className="bg-green-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-green-900"
+                                    className="inline-flex items-center gap-2 bg-emerald-600 text-sm text-white px-4 py-2 rounded-lg hover:bg-emerald-800 active:scale-[.99] transition"
                                 >
-                                    {isEdit ? "Update" : "Save"}
+                                    <FaPencilAlt /> {isEdit ? "Update" : "Save"}
                                 </button>
                             </div>
                         </Form>
@@ -172,41 +198,43 @@ const GenerateSalaryform = () => {
             </div>
 
             {/* Data Table */}
-            <div className="bg-white p-2 my-2 md:p-2 rounded-lg shadow-md">
+            <div className="bg-white p-3 my-4 text-sm rounded-lg shadow-md border border-sky-100">
                 <div className="overflow-x-auto">
-                    <div
-                        className="w-full"
-                        style={{ maxHeight: "400px", overflowY: "auto" }}
-                    >
-                        <table className="table-auto w-full border border-collapse shadow">
-                            <thead>
-                                <tr className="text-center" style={{ backgroundColor: "#CFE0E733" }}>
-                                    <th className="px-4 py-2 border border-gray-200 text-sky-500"></th>
-                                    <th className="px-4 py-2 border border-gray-200 text-sky-500">Sr</th>
-                                    <th className="px-4 py-2 border border-gray-200 text-sky-500">Name</th>
-                                    <th className="px-4 py-2 border border-gray-200 text-sky-500">Category</th>
+                    <div className="w-full" style={{ maxHeight: "400px", overflowY: "auto" }}>
+                        <table className="table-auto w-full border border-gray-100 border-collapse shadow-sm rounded-md overflow-hidden">
+                            <thead className="sticky top-0 z-10">
+                                <tr className="text-center bg-gradient-to-r from-sky-50 to-sky-100 backdrop-blur">
+                                    <th className="px-4 py-2 border border-gray-100 text-sky-700 text-xs tracking-wide">Action</th>
+                                    <th className="px-4 py-2 border border-gray-100 text-sky-700 text-xs tracking-wide">Sr</th>
+                                    <th className="px-4 py-2 border border-gray-100 text-sky-700 text-xs tracking-wide text-left">Name</th>
+                                    <th className="px-4 py-2 border border-gray-100 text-sky-700 text-xs tracking-wide text-left">Category</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {Array.isArray(data) && data.length > 0 ? (
                                     data.map((transaction, index) => (
-                                        <tr key={index} className="border border-gray-200 text-center">
-                                            <td className="px-4 py-3 border border-gray-200 flex space-x-2">
+                                        <tr
+                                            key={index}
+                                            className="border border-gray-100 hover:bg-sky-50/40 transition"
+                                        >
+                                            <td className="px-4 py-3 border border-gray-100 text-center">
                                                 <button
-                                                    className="text-blue-500 hover:text-blue-700 flex items-center"
+                                                    className="text-sky-600 hover:text-sky-800 flex items-center justify-center mx-auto"
                                                     onClick={() => handleUpdate(transaction)}
                                                 >
-                                                    <FaPencilAlt className="mr-1" />
+                                                    <FaPencilAlt />
                                                 </button>
                                             </td>
-                                            <td className="px-4 py-3 border border-gray-200">{index + 1}</td>
-                                            <td className="px-4 py-3 border border-gray-200">{transaction.groupName}</td>
-                                            <td className="px-4 py-3 border border-gray-200">{transaction.category}</td>
+                                            <td className="px-4 py-3 border border-gray-100">{index + 1}</td>
+                                            <td className="px-4 py-3 border border-gray-100 text-sm text-gray-800 uppercase">{transaction.groupName}</td>
+                                            <td className="px-4 py-3 border border-gray-100 text-sm text-gray-800 uppercase">{transaction.category}</td>
                                         </tr>
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="4" className="text-center">No data available</td>
+                                        <td colSpan="4" className="text-center py-8 text-gray-500">
+                                            No data available
+                                        </td>
                                     </tr>
                                 )}
                             </tbody>

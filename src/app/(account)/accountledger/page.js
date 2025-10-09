@@ -3,7 +3,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import LayoutForm from "../../layouts/layoutForm";
 import Heading from "../../(components)/heding";
-import { FaPencilAlt } from "react-icons/fa";
+import { FaPencilAlt, FaSync, FaSave, FaExclamationCircle } from "react-icons/fa";
 import apiClient from "@/app/config";
 import { toast } from 'sonner';
 import withAuth from '@/app/(components)/WithAuth';
@@ -44,10 +44,9 @@ const Ledgerform = () => {
             .matches(/^[a-zA-Z0-9\s]+$/, 'Tin No. can only contain letters, numbers, and spaces'),
         openBlance: Yup.number()
             .required('Opening balance is required'),
-            drOrCr: Yup.string()
-    .required('Debit/Credit selection is required')
-    .oneOf(['Debit', 'Credit'], 'Invalid selection'),
-
+        drOrCr: Yup.string()
+            .required('Debit/Credit selection is required')
+            .oneOf(['Debit', 'Credit'], 'Invalid selection'),
         email: Yup.string()
             .email('Invalid email format')
             .required('Email is required'),
@@ -73,45 +72,33 @@ const Ledgerform = () => {
             alCode: ""
         },
         validationSchema,
-     onSubmit: async (values) => {
-    try {
-        let response;
-
-       if (isEdit) {
-    response = await apiClient.put(`accountLedger/updateData`, values);
-    if (response.status === 200) {
-        toast.success("Data updated successfully");
-        // Update the record in local state
-        setData(prevData =>
-            prevData.map(item =>
-                item.acountLedgerId === values.acountLedgerId ? { ...values } : item
-            )
-        );
-        setIsEdit(false);
-    } else {
-        toast.error(`Update failed! Status: ${response.status}`);
-    }
-}
- else {
-            response = await apiClient.post("accountLedger/create", values);
-            if (response.status === 200) {
-                toast.success("Data saved successfully");
-
-                // 🛠️ Reset form first
-                formik.resetForm();
-
-                // 🛠️ Then fetch updated data
-                await fetchApi();
-            } else {
-                toast.error(`Save failed! Status: ${response.status}`);
+        onSubmit: async (values) => {
+            try {
+                let response;
+                if (isEdit) {
+                    response = await apiClient.put(`accountLedger/updateData`, values);
+                    if (response.status === 200) {
+                        toast.success("Data updated successfully");
+                        setData(prevData => prevData.map(item => item.acountLedgerId === values.acountLedgerId ? { ...values } : item));
+                        setIsEdit(false);
+                    } else {
+                        toast.error(`Update failed! Status: ${response.status}`);
+                    }
+                } else {
+                    response = await apiClient.post("accountLedger/create", values);
+                    if (response.status === 200) {
+                        toast.success("Data saved successfully");
+                        formik.resetForm();
+                        await fetchApi();
+                    } else {
+                        toast.error(`Save failed! Status: ${response.status}`);
+                    }
+                }
+            } catch (error) {
+                console.error("Error handling save operation:", error);
+                toast.error(`An error occurred: ${error.response ? error.response.data : error.message}`);
             }
         }
-    } catch (error) {
-        console.error("Error handling save operation:", error);
-        toast.error(`An error occurred: ${error.response ? error.response.data : error.message}`);
-    }
-}
-
     });
 
     const handleUpdate = (ledger) => {
@@ -147,7 +134,6 @@ const Ledgerform = () => {
         fetchGroup();
     }, []);
 
-
     const fetchApi = async () => {
         try {
             const response = await apiClient.get(`accountLedger/getAllData`);
@@ -156,257 +142,163 @@ const Ledgerform = () => {
             console.error("Error fetching data:", error);
         }
     };
-    
+
     useEffect(() => {
         fetchApi();
     }, []);
-    
-    
 
     return (
-        <div className='p-4 bg-gray-50 mt-6 ml-6  rounded-md shadow-xl'>
-            <Heading headingText="Account Ledger" />
-            <div className='py-4'>
-                <form onSubmit={formik.handleSubmit} className="lg:w-[100%] md:w-[100%] sm:w-[100%]">
-                    <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-4 ">
-                        <div className="mb-4">
-                            <label className="block  text-sm">A/C Name</label>
+        <div className="p-4 bg-gradient-to-br from-sky-50 via-white to-sky-50 mt-6 ml-6 rounded-xl shadow-2xl border border-sky-100">
+            {/* Header Section */}
+            <div className="flex items-center justify-between border-b border-sky-100 pb-3">
+                <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-sky-100 text-sky-700">
+                        <FaPencilAlt size={18} />
+                    </div>
+                    <Heading headingText="Account Ledger" />
+                </div>
+                <div className="text-xs text-sky-700 bg-sky-50 px-3 py-1 rounded-md border border-sky-100">
+                    Master • Account Ledger
+                </div>
+            </div>
+
+            {/* Form Section */}
+            <div className="py-4">
+                <form onSubmit={formik.handleSubmit} className="w-full grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {[
+                        { label: "A/C Name", name: "acountName", type: "text" },
+                        { label: "Exp. Sub Group", name: "expSubGroup", type: "text" },
+                        { label: "Address", name: "addresString", type: "text" },
+                        { label: "Mobile No.", name: "mobileNo", type: "text" },
+                        { label: "Phone No.", name: "phoneNo", type: "text" },
+                        { label: "TIN No.", name: "tinNo", type: "text" },
+                        { label: "Op. Balance", name: "openBlance", type: "number" },
+                        { label: "Email", name: "email", type: "email" },
+                        { label: "Remark", name: "remark", type: "text" }
+                    ].map(({ label, name, type }) => (
+                        <div key={name} className="bg-white border border-sky-100 rounded-lg p-4 shadow-sm">
+                            <label className="block font-semibold text-sm mb-2 text-sky-800">{label}</label>
                             <input
-                                type="text"
+                                type={type}
                                 className={`w-full px-4 py-2 border rounded-lg focus:outline-none text-sm ${
-                                    formik.touched.acountName && formik.errors.acountName ? 'border-red-500' : ''
+                                    formik.touched[name] && formik.errors[name] ? 'border-red-500' : 'border-gray-200'
                                 }`}
-                                {...formik.getFieldProps('acountName')}
+                                {...formik.getFieldProps(name)}
                             />
-                            {formik.touched.acountName && formik.errors.acountName && (
-                                <div className="text-red-500 text-sm mt-1">{formik.errors.acountName}</div>
+                            {formik.touched[name] && formik.errors[name] && (
+                                <div className="mt-2 inline-flex items-center gap-2 text-red-600 text-xs bg-red-50 border border-red-100 px-3 py-1 rounded-md">
+                                    <FaExclamationCircle /> {formik.errors[name]}
+                                </div>
                             )}
                         </div>
+                    ))}
 
-                        <div className="mb-4">
-                            <label className="block text-sm">A/C Group</label>
- <select
-    className={`w-full px-4 py-2 border rounded-lg focus:outline-none text-sm ${
-        formik.touched.accountGrooupId && formik.errors.accountGrooupId ? 'border-red-500' : ''
-    }`}
-    value={formik.values.accountGrooupId}
-    onChange={(e) => {
-        const selectedId = parseInt(e.target.value);
-        const selectedGroup = group.find(g => g.accountGrooupId === selectedId);
-        
-        // Set both the ID and name into formik
-        formik.setFieldValue('accountGrooupId', selectedId);
-        formik.setFieldValue('groupName', selectedGroup?.groupName || '');
-    }}
->
-    <option value={0}>Select Group</option>
-    {group?.map(grp => (
-        <option key={grp.accountGrooupId} value={grp.accountGrooupId}>
-            {grp.groupName}
-        </option>
-    ))}
-</select>
-
-
-
-                           
-                        </div>
-
-                        <div className="mb-4">
-                            <label className="block text-sm">Exp. Sub Group</label>
-                            <input
-                                type="text"
-                                className={`w-full px-4 py-2 border rounded-lg focus:outline-none text-sm ${
-                                    formik.touched.expSubGroup && formik.errors.expSubGroup ? 'border-red-500' : ''
-                                }`}
-                                {...formik.getFieldProps('expSubGroup')}
-                            />
-                            {formik.touched.expSubGroup && formik.errors.expSubGroup && (
-                                <div className="text-red-500 text-sm mt-1">{formik.errors.expSubGroup}</div>
-                            )}
-                        </div>
-
-                        <div className="mb-4">
-                            <label className="block text-sm">Address</label>
-                            <input
-                                type="text"
-                                className={`w-full px-4 py-2 border rounded-lg focus:outline-none text-sm ${
-                                    formik.touched.addresString && formik.errors.addresString ? 'border-red-500' : ''
-                                }`}
-                                {...formik.getFieldProps('addresString')}
-                            />
-                            {formik.touched.addresString && formik.errors.addresString && (
-                                <div className="text-red-500 text-sm mt-1">{formik.errors.addresString}</div>
-                            )}
-                        </div>
-
-                        <div className="mb-4">
-                            <label className="block text-sm">Mobile No.</label>
-                            <input
-                                type="text"
-                                className={`w-full px-4 py-2 border rounded-lg focus:outline-none text-sm ${
-                                    formik.touched.mobileNo && formik.errors.mobileNo ? 'border-red-500' : ''
-                                }`}
-                                {...formik.getFieldProps('mobileNo')}
-                            />
-                            {formik.touched.mobileNo && formik.errors.mobileNo && (
-                                <div className="text-red-500 text-sm mt-1">{formik.errors.mobileNo}</div>
-                            )}
-                        </div>
-
-                        <div className="mb-4">
-                            <label className="block text-sm">Phone No.</label>
-                            <input
-                                type="text"
-                                className={`w-full px-4 py-2 border rounded-lg focus:outline-none text-sm ${
-                                    formik.touched.phoneNo && formik.errors.phoneNo ? 'border-red-500' : ''
-                                }`}
-                                {...formik.getFieldProps('phoneNo')}
-                            />
-                            {formik.touched.phoneNo && formik.errors.phoneNo && (
-                                <div className="text-red-500 text-sm mt-1">{formik.errors.phoneNo}</div>
-                            )}
-                        </div>
-
-                        <div className="mb-4">
-                            <label className="block text-sm">TIN No.</label>
-                            <input
-                                type="text"
-                                className={`w-full px-4 py-2 border rounded-lg focus:outline-none text-sm ${
-                                    formik.touched.tinNo && formik.errors.tinNo ? 'border-red-500' : ''
-                                }`}
-                                {...formik.getFieldProps('tinNo')}
-                            />
-                            {formik.touched.tinNo && formik.errors.tinNo && (
-                                <div className="text-red-500 text-sm mt-1">{formik.errors.tinNo}</div>
-                            )}
-                        </div>
-
-                        <div className="mb-4">
-                            <label className="block text-sm">Op. Balance</label>
-                            <input
-                                type="number"
-                                className={`w-full px-4 py-2 border rounded-lg focus:outline-none text-sm ${
-                                    formik.touched.openBlance && formik.errors.openBlance ? 'border-red-500' : ''
-                                }`}
-                                {...formik.getFieldProps('openBlance')}
-                            />
-                            {formik.touched.openBlance && formik.errors.openBlance && (
-                                <div className="text-red-500 text-sm mt-1">{formik.errors.openBlance}</div>
-                            )}
-                        </div>
-
-                        <div className="mb-4">
-    <label className="block text-sm">Debit / Credit</label>
-    <select
-        className={`w-full px-4 py-2 border rounded-lg focus:outline-none text-sm ${
-            formik.touched.drOrCr && formik.errors.drOrCr ? 'border-red-500' : ''
-        }`}
-        {...formik.getFieldProps('drOrCr')}
-    >
-        <option value="">Select Type</option>
-        <option value="Debit">Debit</option>
-        <option value="Credit">Credit</option>
-    </select>
-    {formik.touched.drOrCr && formik.errors.drOrCr && (
-        <div className="text-red-500 text-sm mt-1">{formik.errors.drOrCr}</div>
-    )}
-</div>
-
-
-                        <div className="mb-4">
-                            <label className="block text-sm">Email</label>
-                            <input
-                                type="email"
-                                className={`w-full px-4 py-2 border rounded-lg focus:outline-none text-sm ${
-                                    formik.touched.email && formik.errors.email ? 'border-red-500' : ''
-                                }`}
-                                {...formik.getFieldProps('email')}
-                            />
-                            {formik.touched.email && formik.errors.email && (
-                                <div className="text-red-500 text-sm mt-1">{formik.errors.email}</div>
-                            )}
-                        </div>
-
-                        <div className="mb-4">
-                            <label className="block text-sm">Remark</label>
-                            <input
-                                type="text"
-                                className={`w-full px-4 py-2 border rounded-lg focus:outline-none text-sm ${
-                                    formik.touched.remark && formik.errors.remark ? 'border-red-500' : ''
-                                }`}
-                                {...formik.getFieldProps('remark')}
-                            />
-                            {formik.touched.remark && formik.errors.remark && (
-                                <div className="text-red-500 text-sm mt-1">{formik.errors.remark}</div>
-                            )}
-                        </div>
+                    {/* Account Group dropdown */}
+                    <div className="bg-white border border-sky-100 rounded-lg p-4 shadow-sm">
+                        <label className="block font-semibold text-sm mb-2 text-sky-800">A/C Group</label>
+                        <select
+                            className={`w-full px-4 py-2 border rounded-lg focus:outline-none text-sm ${
+                                formik.touched.accountGrooupId && formik.errors.accountGrooupId ? 'border-red-500' : 'border-gray-200'
+                            }`}
+                            value={formik.values.accountGrooupId}
+                            onChange={(e) => {
+                                const selectedId = parseInt(e.target.value);
+                                const selectedGroup = group.find(g => g.accountGrooupId === selectedId);
+                                formik.setFieldValue('accountGrooupId', selectedId);
+                                formik.setFieldValue('groupName', selectedGroup?.groupName || '');
+                            }}
+                        >
+                            <option value={0}>Select Group</option>
+                            {group?.map(grp => (
+                                <option key={grp.accountGrooupId} value={grp.accountGrooupId}>{grp.groupName}</option>
+                            ))}
+                        </select>
+                        {formik.touched.accountGrooupId && formik.errors.accountGrooupId && (
+                            <div className="mt-2 inline-flex items-center gap-2 text-red-600 text-xs bg-red-50 border border-red-100 px-3 py-1 rounded-md">
+                                <FaExclamationCircle /> {formik.errors.accountGrooupId}
+                            </div>
+                        )}
                     </div>
 
-                    <div className="flex justify-start w-full my-4 space-x-4 p-2">
+                    {/* Debit / Credit dropdown */}
+                    <div className="bg-white border border-sky-100 rounded-lg p-4 shadow-sm">
+                        <label className="block font-semibold text-sm mb-2 text-sky-800">Debit / Credit</label>
+                        <select
+                            className={`w-full px-4 py-2 border rounded-lg focus:outline-none text-sm ${
+                                formik.touched.drOrCr && formik.errors.drOrCr ? 'border-red-500' : 'border-gray-200'
+                            }`}
+                            {...formik.getFieldProps('drOrCr')}
+                        >
+                            <option value="">Select Type</option>
+                            <option value="Debit">Debit</option>
+                            <option value="Credit">Credit</option>
+                        </select>
+                        {formik.touched.drOrCr && formik.errors.drOrCr && (
+                            <div className="mt-2 inline-flex items-center gap-2 text-red-600 text-xs bg-red-50 border border-red-100 px-3 py-1 rounded-md">
+                                <FaExclamationCircle /> {formik.errors.drOrCr}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Buttons */}
+                    <div className="col-span-full flex justify-start gap-4 py-2 px-2">
                         <button
                             type="button"
-                            className="bg-gray-600 text-white px-6 py-2 text-sm rounded-lg hover:bg-gray-900"
-                            onClick={() => formik.resetForm()}
+                            onClick={() => {
+                                formik.resetForm();
+                                setIsEdit(false);
+                            }}
+                            className="inline-flex items-center gap-2 bg-slate-600 text-white px-6 py-2 rounded-lg hover:bg-slate-800 active:scale-[.99] transition"
                         >
-                            Refresh
+                            <FaSync /> Refresh
                         </button>
                         <button
                             type="submit"
-                            className="bg-green-600 text-sm text-white px-4 py-2 rounded-lg hover:bg-green-900"
+                            className="inline-flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-800 active:scale-[.99] transition"
                         >
-                            {isEdit ? "Update" : "Save"}
+                            <FaSave /> {isEdit ? "Update" : "Save"}
                         </button>
                     </div>
                 </form>
             </div>
-            <div className="bg-white p-2 my-2 md:p-2 rounded-lg shadow-md">
+
+            {/* Data Table */}
+            <div className="bg-white p-3 my-4 text-sm rounded-lg shadow-md border border-sky-100">
                 <div className="overflow-x-auto">
-                    <div
-                        className="w-full"
-                        style={{ maxHeight: "400px", overflowY: "auto" }}
-                    >
-                        <table className="table-auto w-full border border-collapse shadow">
-                            <thead>
-                                <tr className="text-center" style={{ backgroundColor: "#CFE0E733" }}>
-                                    <th className="px-4 py-2 border border-gray-200 text-sky-500">Action</th>
-                                    <th className="px-4 py-2 border border-gray-200 text-sky-500">Sr</th>
-                                    <th className="px-4 py-2 border border-gray-200 text-sky-500">A/C Name</th>
-                                    <th className="px-4 py-2 border border-gray-200 text-sky-500">Group Name</th>
-                   
-                                    <th className="px-4 py-2 border border-gray-200 text-sky-500">Op. Balance</th>
-                                    <th className="px-4 py-2 border border-gray-200 text-sky-500">Dr/Cr</th>
-
-
-
+                    <div className="w-full" style={{ maxHeight: "400px", overflowY: "auto" }}>
+                        <table className="table-auto w-full border border-gray-100 border-collapse shadow-sm rounded-md overflow-hidden">
+                            <thead className="sticky top-0 z-10">
+                                <tr className="text-center bg-gradient-to-r from-sky-50 to-sky-100 backdrop-blur">
+                                    <th className="px-4 py-2 border border-gray-100 text-sky-700 text-xs tracking-wide">Action</th>
+                                    <th className="px-4 py-2 border border-gray-100 text-sky-700 text-xs tracking-wide">Sr</th>
+                                    <th className="px-4 py-2 border border-gray-100 text-sky-700 text-xs tracking-wide text-left">A/C Name</th>
+                                    <th className="px-4 py-2 border border-gray-100 text-sky-700 text-xs tracking-wide text-left">Group Name</th>
+                                    <th className="px-4 py-2 border border-gray-100 text-sky-700 text-xs tracking-wide text-left">Op. Balance</th>
+                                    <th className="px-4 py-2 border border-gray-100 text-sky-700 text-xs tracking-wide text-left">Dr/Cr</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {Array.isArray(data) && data.length > 0 ? (
                                     data.map((transaction, index) => (
-                                        <tr key={index} className="border border-gray-200 text-center">
-                                            <td className="px-4 py-3 border border-gray-200 flex space-x-2">
-
+                                        <tr key={transaction.acountLedgerId} className="border border-gray-100 hover:bg-sky-50/40 transition">
+                                            <td className="px-4 py-3 border border-gray-100 text-center">
                                                 <button
-                                                    className="text-blue-500 hover:text-blue-700 flex items-center"
+                                                    className="text-sky-600 hover:text-sky-800 flex items-center justify-center mx-auto"
                                                     onClick={() => handleUpdate(transaction)}
                                                 >
-                                                    <FaPencilAlt className="mr-1" />
+                                                    <FaPencilAlt />
                                                 </button>
                                             </td>
-                                            <td className="px-4 py-3 border border-gray-200">{index + 1}</td>
-                                            <td className="px-4 py-3 border border-gray-200">{transaction.acountName}</td>
-                                            <td className="px-4 py-3 border border-gray-200">{transaction.groupName}</td>
-                                            <td className="px-4 py-3 border border-gray-200">{transaction.openBlance}</td>
-                                            <td className="px-4 py-3 border border-gray-200">{transaction.drOrCr}</td>
-
-
-
+                                            <td className="px-4 py-3 border border-gray-100">{index + 1}</td>
+                                            <td className="px-4 py-3 border border-gray-100 text-sm text-gray-800">{transaction.acountName}</td>
+                                            <td className="px-4 py-3 border border-gray-100 text-sm text-gray-800">{transaction.groupName}</td>
+                                            <td className="px-4 py-3 border border-gray-100 text-sm text-gray-800">{transaction.openBlance}</td>
+                                            <td className="px-4 py-3 border border-gray-100 text-sm text-gray-800">{transaction.drOrCr}</td>
                                         </tr>
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="7" className="text-center">No data available</td>
+                                        <td colSpan="7" className="text-center py-8 text-gray-500">No data available</td>
                                     </tr>
                                 )}
                             </tbody>
@@ -419,8 +311,3 @@ const Ledgerform = () => {
 };
 
 export default withAuth(Ledger, ['SUPERADMIN', 'ADMIN', 'DOCTOR']);
-
-
-
-
-

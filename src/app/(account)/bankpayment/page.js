@@ -25,9 +25,8 @@ const BankPaymentform = () => {
     const [filteredData, setFilteredData] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 5; // Number of items per page
+    const itemsPerPage = 5;
 
-    // Fetch API Data
     const fetchApi = async () => {
         try {
             const response = await apiClient.get(`bankPayment/getAlldata`);
@@ -35,6 +34,7 @@ const BankPaymentform = () => {
             setFilteredData(response?.data?.data);
         } catch (error) {
             console.error("Error fetching data:", error);
+            toast.error("Failed to load data.");
         }
     };
 
@@ -42,31 +42,23 @@ const BankPaymentform = () => {
         fetchApi();
     }, []);
 
-    // Handle Search Filtering
     const handleSearch = (e) => {
         const term = e.target.value.toLowerCase();
         setSearchTerm(term);
-
-        const filtered = data?.filter((item) =>
+        const filtered = data?.filter(item =>
             item.empName.toLowerCase().includes(term)
         );
         setFilteredData(filtered);
-        setCurrentPage(1); // Reset to the first page after filtering
+        setCurrentPage(1);
     };
 
-    // Pagination Logic
     const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const currentData = filteredData?.slice(startIndex, startIndex + itemsPerPage);
 
-    const handleNext = () => {
-        if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
-    };
+    const handleNext = () => { if (currentPage < totalPages) setCurrentPage(prev => prev + 1); };
+    const handlePrevious = () => { if (currentPage > 1) setCurrentPage(prev => prev - 1); };
 
-    const handlePrevious = () => {
-        if (currentPage > 1) setCurrentPage((prev) => prev - 1);
-    };
-    // Validation Schema
     const validationSchema = Yup.object({
         voucherDate: Yup.date()
             .required('Voucher date is required')
@@ -82,10 +74,7 @@ const BankPaymentform = () => {
         amount: Yup.number()
             .required('Amount is required')
             .positive('Amount must be positive')
-            .min(1, 'Amount must be greater than 0')
-        // voucherNarration: Yup.string()
-        //     .required('Narration is required')
-        //     .min(5, 'Narration must be at least 5 characters')
+            .min(1, 'Amount must be greater than 0'),
     });
 
     const formik = useFormik({
@@ -104,47 +93,37 @@ const BankPaymentform = () => {
         },
         validationSchema,
         onSubmit: async (values) => {
-  try {
-    let response;
-    if (isEdit) {
-      response = await apiClient.put(`bankPayment/updateData`, values);
-      if (response.status === 200) {
-        toast.success("Data updated successfully");
-
-    
-        setData(prev =>
-          prev.map(item => item.paymentId === values.paymentId ? { ...values } : item)
-        );
-        setFilteredData(prev =>
-          prev.map(item => item.paymentId === values.paymentId ? { ...values } : item)
-        );
-
-        setIsEdit(false);
-      } else {
-        toast.error(`Update failed! Status: ${response.status}`);
-      }
-    } else {
-      response = await apiClient.post("bankPayment/saveAllData", values);
-      if (response.status === 200) {
-        toast.success("Data saved successfully");
-
-        const savedData = response.data.data; 
-        const newRecord = savedData || values;
-        setData(prev => [newRecord, ...prev]);
-        setFilteredData(prev => [newRecord, ...prev]);
-        setCurrentPage(1); // Optional: Show the latest on page 1
-      } else {
-        toast.error(`Save failed! Status: ${response.status}`);
-      }
-    }
-
-    formik.resetForm();
-  } catch (error) {
-    console.error("Error handling save operation:", error);
-    toast.error(`An error occurred: ${error.response ? error.response.data : error.message}`);
-  }
-},
-
+            try {
+                let response;
+                if (isEdit) {
+                    response = await apiClient.put(`bankPayment/updateData`, values);
+                    if (response.status === 200) {
+                        toast.success("Data updated successfully");
+                        setData(prev => prev.map(item => item.paymentId === values.paymentId ? { ...values } : item));
+                        setFilteredData(prev => prev.map(item => item.paymentId === values.paymentId ? { ...values } : item));
+                        setIsEdit(false);
+                    } else {
+                        toast.error(`Update failed! Status: ${response.status}`);
+                    }
+                } else {
+                    response = await apiClient.post("bankPayment/saveAllData", values);
+                    if (response.status === 200) {
+                        toast.success("Data saved successfully");
+                        const savedData = response.data.data;
+                        const newRecord = savedData || values;
+                        setData(prev => [newRecord, ...prev]);
+                        setFilteredData(prev => [newRecord, ...prev]);
+                        setCurrentPage(1);
+                    } else {
+                        toast.error(`Save failed! Status: ${response.status}`);
+                    }
+                }
+                formik.resetForm();
+            } catch (error) {
+                console.error("Error handling save operation:", error);
+                toast.error(`An error occurred: ${error.response ? error.response.data : error.message}`);
+            }
+        },
     });
 
     const handleUpdate = (payment) => {
@@ -159,7 +138,7 @@ const BankPaymentform = () => {
             openBlance: payment.openBlance,
             amount: payment.amount,
             voucherNarration: payment.voucherNarration,
-            acountName: payment.acountName
+            acountName: payment.acountName,
         });
         setIsEdit(true);
     };
@@ -169,14 +148,14 @@ const BankPaymentform = () => {
             const response = await apiClient.get(`emp/getAllEmployee`);
             setEmp(response?.data?.data);
         } catch (error) {
-            console.error("Error fetching data", error);
+            console.error("Error fetching employee data", error);
+            toast.error("Failed to load employees.");
         }
     };
 
     const handleAccount = async (e) => {
         const selectedLedgerId = e.target.value;
         formik.setFieldValue('acountLedgerId', selectedLedgerId);
-
         if (selectedLedgerId) {
             try {
                 const response = await apiClient.get(`accountLedger/getData/byid?ledgerId=${selectedLedgerId}`);
@@ -195,7 +174,8 @@ const BankPaymentform = () => {
             const response = await apiClient.get(`accountLedger/getAllAccountName/withoutBankAccountName`);
             setAccount(response?.data?.data);
         } catch (error) {
-            console.error("Error fetching data", error);
+            console.error("Error fetching accounts", error);
+            toast.error("Failed to load accounts.");
         }
     };
 
@@ -204,265 +184,266 @@ const BankPaymentform = () => {
         fetchAccount();
     }, []);
 
-
-
-
     const handleMedicalDownload = async (voucherNo) => {
         try {
             const response = await apiClient.get(`bankPayment/bankPaymetsPdf`, {
                 params: { voucherNo },
                 responseType: 'blob',
             });
-            // Check if the response is successful
             if (response.status === 200) {
-                const blob = new Blob([response?.data], { type: response.headers['content-type'] });
+                const blob = new Blob([response.data], { type: response.headers['content-type'] });
                 const url = window.URL.createObjectURL(blob);
-
-                // Open the PDF in a new tab
                 const pdfWindow = window.open('');
                 pdfWindow.document.write(`<iframe width='100%' height='100%' src='${url}'></iframe>`);
-
-                // Optional: Clean up the URL after some time to release memory
-                setTimeout(() => {
-                    window.URL.revokeObjectURL(url);
-                }, 100); // Adjust timeout as needed
+                setTimeout(() => window.URL.revokeObjectURL(url), 100);
             } else {
-                console.error('Failed to download Medical:', response.status);
-                toast.error("Failed to download Medical. Please try again.");
+                toast.error("Failed to download report. Please try again.");
             }
         } catch (error) {
-            console.error('Error downloading the Medical:', error);
-            toast.error("An error occurred while downloading the Medical. Please try again.");
+            toast.error("An error occurred while downloading report. Please try again.");
         }
     };
 
-
-
     return (
-        <div className='p-4 bg-gray-50 mt-6 ml-6  rounded-md shadow-xl'>
-            <Heading headingText="Bank Payment" />
-            <div className='py-4'>
-                <form onSubmit={formik.handleSubmit} className="lg:w-[100%] md:w-[100%] sm:w-[100%]">
-                    <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-4 ">
-                        <div className="mb-4">
-                            <label className="block text-sm">Voucher No.(Autogenerated)</label>
-                            <input
-                                type="text"
-                                className="w-full px-4 py-2 text-sm border rounded-lg focus:outline-none"
-                                {...formik.getFieldProps('voucherNo')}
-                                readOnly
-                            />
-                        </div>
+        <div className="p-4 bg-gradient-to-br from-sky-50 via-white to-sky-50 mt-6 ml-6 rounded-xl shadow-2xl border border-sky-100">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-sky-100 pb-3">
+                <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-sky-100 text-sky-700">
+                        <IoPrintOutline size={18} />
+                    </div>
+                    <Heading headingText="Bank Payment" />
+                </div>
+                <div className="text-xs text-sky-700 bg-sky-50 px-3 py-1 rounded-md border border-sky-100">
+                    Master • Bank Payment
+                </div>
+            </div>
 
-                        <div className="mb-4">
-                            <label className="block text-sm">Voucher Date</label>
-                            <input
-                                type="date"
-                                className={`w-full px-4 py-2 text-sm border rounded-lg focus:outline-none ${formik.touched.voucherDate && formik.errors.voucherDate ? 'border-red-500' : ''
-                                    }`}
-                                {...formik.getFieldProps('voucherDate')}
-                            />
-                            {formik.touched.voucherDate && formik.errors.voucherDate && (
-                                <div className="text-red-500 text-sm mt-1">{formik.errors.voucherDate}</div>
-                            )}
-                        </div>
-
-                        <div className="mb-4">
-                            <label className="block text-sm">Bank Account</label>
-                            <select
-                                className={`w-full px-4 py-2 text-sm border rounded-lg focus:outline-none ${formik.touched.empCode && formik.errors.empCode ? 'border-red-500' : ''
-                                    }`}
-                                {...formik.getFieldProps('empCode')}
-                            >
-                                <option value="">Select Employee</option>
-                                {emp?.map((Emp) => (
-                                    <option key={Emp.empCode} value={Emp.empCode}>{Emp.empName}</option>
-                                ))}
-                            </select>
-                            {formik.touched.empCode && formik.errors.empCode && (
-                                <div className="text-red-500 text-sm mt-1">{formik.errors.empCode}</div>
-                            )}
-                        </div>
-
-                        <div className="mb-4">
-                            <label className="block text-sm">Account Name</label>
-                            <select
-                                className={`w-full px-4 text-sm py-2 border rounded-lg focus:outline-none ${formik.touched.acountLedgerId && formik.errors.acountLedgerId ? 'border-red-500' : ''
-                                    }`}
-                                onChange={handleAccount}
-                                value={formik.values.acountLedgerId}
-                            >
-                                <option value="">Select A/C</option>
-                                {account?.map((acc) => (
-                                    <option key={acc.acountLedgerId} value={acc.acountLedgerId}>
-                                        {acc.acountName}
-                                    </option>
-                                ))}
-                            </select>
-                            {formik.touched.acountLedgerId && formik.errors.acountLedgerId && (
-                                <div className="text-red-500 text-sm mt-1">{formik.errors.acountLedgerId}</div>
-                            )}
-                        </div>
-
-                        <div className="mb-4">
-                            <label className="block text-sm">Op. Balance</label>
-                            <input
-                                type="number"
-                                className="w-full px-4 py-2 text-sm border rounded-lg focus:outline-none"
-                                {...formik.getFieldProps('openBlance')}
-                                readOnly
-                            />
-                        </div>
-
-                        <div className="mb-4">
-                            <label className="block text-sm">Against Bill No.</label>
-                            <input
-                                type="text"
-                                className={`w-full px-4 py-2 text-sm border rounded-lg focus:outline-none ${formik.touched.againstBillNo && formik.errors.againstBillNo ? 'border-red-500' : ''
-                                    }`}
-                                {...formik.getFieldProps('againstBillNo')}
-                            />
-                            {formik.touched.againstBillNo && formik.errors.againstBillNo && (
-                                <div className="text-red-500 text-sm mt-1">{formik.errors.againstBillNo}</div>
-                            )}
-                        </div>
-
-                        <div className="mb-4">
-                            <label className="block text-sm">Amount</label>
-                            <input
-                                type="text"
-                                className={`w-full px-4 py-2 text-sm border rounded-lg focus:outline-none ${formik.touched.amount && formik.errors.amount ? 'border-red-500' : ''
-                                    }`}
-                                {...formik.getFieldProps('amount')}
-                            />
-                            {formik.touched.amount && formik.errors.amount && (
-                                <div className="text-red-500 text-sm mt-1">{formik.errors.amount}</div>
-                            )}
-                        </div>
-
-                        <div className="mb-4">
-                            <label className="block text-sm">Voucher Narration</label>
-                            <input
-                                type="text"
-                                className={`w-full px-4 py-2 text-sm border rounded-lg focus:outline-none ${formik.touched.voucherNarration && formik.errors.voucherNarration ? 'border-red-500' : ''
-                                    }`}
-                                {...formik.getFieldProps('voucherNarration')}
-                            />
-                            {formik.touched.voucherNarration && formik.errors.voucherNarration && (
-                                <div className="text-red-500 text-sm mt-1">{formik.errors.voucherNarration}</div>
-                            )}
-                        </div>
+            {/* Form */}
+            <div className="py-4">
+                <form onSubmit={formik.handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+                    {/* Voucher No (readonly) */}
+                    <div className="bg-white border border-sky-100 rounded-lg p-4 shadow-sm">
+                        <label className="block font-semibold text-sm mb-2 text-sky-800">Voucher No. (Autogenerated)</label>
+                        <input
+                            type="text"
+                            className="w-full px-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none"
+                            {...formik.getFieldProps('voucherNo')}
+                            readOnly
+                        />
                     </div>
 
-                    <div className="flex justify-start my-4 w-full space-x-4 p-2">
+                    {/* Voucher Date */}
+                    <div className="bg-white border border-sky-100 rounded-lg p-4 shadow-sm">
+                        <label className="block font-semibold text-sm mb-2 text-sky-800">Voucher Date</label>
+                        <input
+                            type="date"
+                            className={`w-full px-4 py-2 text-sm border rounded-lg focus:outline-none ${formik.touched.voucherDate && formik.errors.voucherDate ? 'border-red-500' : 'border-gray-200'}`}
+                            {...formik.getFieldProps('voucherDate')}
+                        />
+                        {formik.touched.voucherDate && formik.errors.voucherDate && (
+                            <div className="mt-2 inline-flex items-center gap-2 text-red-600 text-xs bg-red-50 border border-red-100 px-3 py-1 rounded-md">
+                                <IoPrintOutline /> {formik.errors.voucherDate}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Bank Account */}
+                    <div className="bg-white border border-sky-100 rounded-lg p-4 shadow-sm">
+                        <label className="block font-semibold text-sm mb-2 text-sky-800">Bank Account</label>
+                        <select
+                            className={`w-full px-4 py-2 text-sm border rounded-lg focus:outline-none ${formik.touched.empCode && formik.errors.empCode ? 'border-red-500' : 'border-gray-200'}`}
+                            {...formik.getFieldProps('empCode')}
+                        >
+                            <option value="">Select Employee</option>
+                            {emp?.map((Emp) => (
+                                <option key={Emp.empCode} value={Emp.empCode}>{Emp.empName}</option>
+                            ))}
+                        </select>
+                        {formik.touched.empCode && formik.errors.empCode && (
+                            <div className="mt-2 inline-flex items-center gap-2 text-red-600 text-xs bg-red-50 border border-red-100 px-3 py-1 rounded-md">
+                                <IoPrintOutline /> {formik.errors.empCode}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Account Name */}
+                    <div className="bg-white border border-sky-100 rounded-lg p-4 shadow-sm">
+                        <label className="block font-semibold text-sm mb-2 text-sky-800">Account Name</label>
+                        <select
+                            className={`w-full px-4 py-2 border rounded-lg focus:outline-none text-sm ${formik.touched.acountLedgerId && formik.errors.acountLedgerId ? 'border-red-500' : 'border-gray-200'}`}
+                            onChange={handleAccount}
+                            value={formik.values.acountLedgerId}
+                        >
+                            <option value="">Select A/C</option>
+                            {account?.map((acc) => (
+                                <option key={acc.acountLedgerId} value={acc.acountLedgerId}>
+                                    {acc.acountName}
+                                </option>
+                            ))}
+                        </select>
+                        {formik.touched.acountLedgerId && formik.errors.acountLedgerId && (
+                            <div className="mt-2 inline-flex items-center gap-2 text-red-600 text-xs bg-red-50 border border-red-100 px-3 py-1 rounded-md">
+                                <IoPrintOutline /> {formik.errors.acountLedgerId}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Op. Balance (readonly) */}
+                    <div className="bg-white border border-sky-100 rounded-lg p-4 shadow-sm">
+                        <label className="block font-semibold text-sm mb-2 text-sky-800">Op. Balance</label>
+                        <input
+                            type="number"
+                            className="w-full px-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none"
+                            {...formik.getFieldProps('openBlance')}
+                            readOnly
+                        />
+                    </div>
+
+                    {/* Against Bill No. */}
+                    <div className="bg-white border border-sky-100 rounded-lg p-4 shadow-sm col-span-1 md:col-span-2">
+                        <label className="block font-semibold text-sm mb-2 text-sky-800">Against Bill No.</label>
+                        <input
+                            type="text"
+                            className={`w-full px-4 py-2 text-sm border rounded-lg focus:outline-none ${formik.touched.againstBillNo && formik.errors.againstBillNo ? 'border-red-500' : 'border-gray-200'}`}
+                            {...formik.getFieldProps('againstBillNo')}
+                        />
+                        {formik.touched.againstBillNo && formik.errors.againstBillNo && (
+                            <div className="mt-2 inline-flex items-center gap-2 text-red-600 text-xs bg-red-50 border border-red-100 px-3 py-1 rounded-md">
+                                <IoPrintOutline /> {formik.errors.againstBillNo}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Amount */}
+                    <div className="bg-white border border-sky-100 rounded-lg p-4 shadow-sm col-span-1 md:col-span-1">
+                        <label className="block font-semibold text-sm mb-2 text-sky-800">Amount</label>
+                        <input
+                            type="text"
+                            className={`w-full px-4 py-2 text-sm border rounded-lg focus:outline-none ${formik.touched.amount && formik.errors.amount ? 'border-red-500' : 'border-gray-200'}`}
+                            {...formik.getFieldProps('amount')}
+                        />
+                        {formik.touched.amount && formik.errors.amount && (
+                            <div className="mt-2 inline-flex items-center gap-2 text-red-600 text-xs bg-red-50 border border-red-100 px-3 py-1 rounded-md">
+                                <IoPrintOutline /> {formik.errors.amount}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Voucher Narration */}
+                    <div className="bg-white border border-sky-100 rounded-lg p-4 shadow-sm col-span-full">
+                        <label className="block font-semibold text-sm mb-2 text-sky-800">Voucher Narration</label>
+                        <input
+                            type="text"
+                            className={`w-full px-4 py-2 text-sm border rounded-lg focus:outline-none ${formik.touched.voucherNarration && formik.errors.voucherNarration ? 'border-red-500' : 'border-gray-200'}`}
+                            {...formik.getFieldProps('voucherNarration')}
+                        />
+                        {formik.touched.voucherNarration && formik.errors.voucherNarration && (
+                            <div className="mt-2 inline-flex items-center gap-2 text-red-600 text-xs bg-red-50 border border-red-100 px-3 py-1 rounded-md">
+                                <IoPrintOutline /> {formik.errors.voucherNarration}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Buttons */}
+                    <div className="col-span-full flex justify-start gap-4 py-2 px-2">
                         <button
                             type="button"
-                            className="bg-gray-600 text-white text-sm px-6 py-2 rounded-lg hover:bg-gray-900"
-                            onClick={() => formik.resetForm()}
+                            onClick={() => {
+                                formik.resetForm();
+                                setIsEdit(false);
+                            }}
+                            className="inline-flex items-center gap-2 bg-slate-600 text-white px-6 py-2 rounded-lg hover:bg-slate-800 active:scale-[.99] transition"
                         >
-                            Refresh
+                            <IoPrintOutline /> Refresh
                         </button>
                         <button
                             type="submit"
-                            className="bg-green-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-green-900"
+                            className="inline-flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-800 active:scale-[.99] transition"
                         >
-                            {isEdit ? "Update" : "Save"}
+                            <IoPrintOutline /> {isEdit ? "Update" : "Save"}
                         </button>
                     </div>
                 </form>
             </div>
-            <div className="p-4 bg-gray-50 mt-6 rounded-md shadow-xl">
-            {/* Search Bar */}
-            <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold">Bank Payment Table</h2>
-                <input
-                    type="text"
-                    placeholder="Search by Employee Name"
-                    value={searchTerm}
-                    onChange={handleSearch}
-                    className="border px-4 py-2 rounded-md"
-                />
-            </div>
 
-            {/* Table */}
-            <div className="bg-white p-2 my-2 md:p-2 rounded-lg shadow-md">
-                <div className="overflow-x-auto">
-                    <div
-                        className="w-full"
-                        style={{ maxHeight: "400px", overflowY: "auto" }}
-                    >
-                        <table className="table-auto w-full border border-collapse shadow">
-                            <thead>
-                                <tr className="text-center" style={{ backgroundColor: "#CFE0E733" }}>
-                                    <th className="px-4 py-2 border border-gray-200 text-sky-500">Report</th>
-                                    <th className="px-4 py-2 border border-gray-200 text-sky-500">Sr</th>
-                                    <th className="px-4 py-2 border border-gray-200 text-sky-500">Vou No.</th>
-                                    <th className="px-4 py-2 border border-gray-200 text-sky-500">Employee Name</th>
-                                    <th className="px-4 py-2 border border-gray-200 text-sky-500">Vou Date</th>
-                                    <th className="px-4 py-2 border border-gray-200 text-sky-500">Amount</th>
-                                    <th className="px-4 py-2 border border-gray-200 text-sky-500">Account Name</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {currentData?.length > 0 ? (
-                                    currentData?.map((transaction, index) => (
-                                        <tr key={index} className="border border-gray-200 text-center">
-                                            <td className="px-4 py-3 border border-gray-200 flex space-x-2">
-                                                <button
-                                                    className="text-blue-500 hover:text-blue-700 flex items-center"
-                                                    onClick={() => handleMedicalDownload(transaction.voucherNo)}
-                                                >
-                                                    <IoPrintOutline className="mr-1" />
-                                                </button>
-                                            </td>
-                                            <td className="px-4 py-3 border border-gray-200">{startIndex + index + 1}</td>
-                                            <td className="px-4 py-3 border border-gray-200">{transaction.voucherNo}</td>
-                                            <td className="px-4 py-3 border border-gray-200">{transaction.empName}</td>
-                                            <td className="px-4 py-3 border border-gray-200">{transaction.voucherDate}</td>
-                                            <td className="px-4 py-3 border border-gray-200">{transaction.amount}</td>
-                                            <td className="px-4 py-3 border border-gray-200">{transaction.acountName}</td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan="7" className="text-center">No data available</td>
+            {/* Bank Payment Table */}
+
+            <div className="p-4 bg-white rounded-lg shadow-md border border-sky-100 mt-6">
+                <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-lg font-semibold text-sky-700">Bank Payment Table</h2>
+                    <input
+                        type="text"
+                        placeholder="Search by Employee Name"
+                        value={searchTerm}
+                        onChange={handleSearch}
+                        className="border border-gray-300 rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-300"
+                    />
+                </div>
+
+                <div className="overflow-x-auto max-h-[400px]">
+                    <table className="table-auto w-full border border-gray-100 rounded-md border-collapse shadow-sm">
+                        <thead className="sticky top-0 bg-gradient-to-r from-sky-50 to-sky-100 backdrop-blur z-10">
+                            <tr className="text-center text-xs text-sky-700">
+                                <th className="px-4 py-2 border border-gray-100">Report</th>
+                                <th className="px-4 py-2 border border-gray-100">Sr</th>
+                                <th className="px-4 py-2 border border-gray-100">Vou No.</th>
+                                <th className="px-4 py-2 border border-gray-100 text-left">Employee Name</th>
+                                <th className="px-4 py-2 border border-gray-100">Vou Date</th>
+                                <th className="px-4 py-2 border border-gray-100">Amount</th>
+                                <th className="px-4 py-2 border border-gray-100 text-left">Account Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {currentData.length > 0 ? (
+                                currentData.map((item, index) => (
+                                    <tr key={item.paymentId} className="border border-gray-100 hover:bg-sky-50/40 transition">
+                                        <td className="px-4 py-3 border border-gray-100 text-center">
+                                            <button
+                                                className="text-blue-600 hover:text-blue-800 flex justify-center mx-auto"
+                                                onClick={() => handleMedicalDownload(item.voucherNo)}
+                                            >
+                                                <IoPrintOutline size={18} />
+                                            </button>
+                                        </td>
+                                        <td className="px-4 py-3 border border-gray-100">{startIndex + index + 1}</td>
+                                        <td className="px-4 py-3 border border-gray-100">{item.voucherNo}</td>
+                                        <td className="px-4 py-3 border border-gray-100 text-left">{item.empName}</td>
+                                        <td className="px-4 py-3 border border-gray-100">{item.voucherDate}</td>
+                                        <td className="px-4 py-3 border border-gray-100">{item.amount}</td>
+                                        <td className="px-4 py-3 border border-gray-100 text-left">{item.acountName}</td>
                                     </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="7" className="text-center py-8 text-gray-500">No data available</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+
+                {/* Pagination */}
+                <div className="flex justify-between items-center mt-4">
+                    <button
+                        onClick={handlePrevious}
+                        disabled={currentPage === 1}
+                        className={`px-4 py-2 rounded-md border ${currentPage === 1 ? "bg-gray-200 text-gray-500" : "bg-blue-500 text-white hover:bg-blue-600"}`}
+                    >
+                        Previous
+                    </button>
+                    <span className="text-gray-600">Page {currentPage} of {totalPages}</span>
+                    <button
+                        onClick={handleNext}
+                        disabled={currentPage === totalPages}
+                        className={`px-4 py-2 rounded-md border ${currentPage === totalPages ? "bg-gray-200 text-gray-500" : "bg-blue-500 text-white hover:bg-blue-600"}`}
+                    >
+                        Next
+                    </button>
                 </div>
             </div>
-
-            {/* Pagination */}
-            <div className="flex justify-between items-center mt-4">
-                <button
-                    onClick={handlePrevious}
-                    disabled={currentPage === 1}
-                    className={`px-4 py-2 rounded-md border ${
-                        currentPage === 1 ? "bg-gray-200 text-gray-500" : "bg-blue-500 text-white hover:bg-blue-600"
-                    }`}
-                >
-                    Previous
-                </button>
-                <span className="text-gray-600">
-                    Page {currentPage} of {totalPages}
-                </span>
-                <button
-                    onClick={handleNext}
-                    disabled={currentPage === totalPages}
-                    className={`px-4 py-2 rounded-md border ${
-                        currentPage === totalPages ? "bg-gray-200 text-gray-500" : "bg-blue-500 text-white hover:bg-blue-600"
-                    }`}
-                >
-                    Next
-                </button>
-            </div>
-        </div>
         </div>
     );
 };
 
 export default withAuth(BankPayment, ['SUPERADMIN', 'ADMIN', 'DOCTOR']);
-
-

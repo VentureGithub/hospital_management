@@ -43,13 +43,13 @@ const JournalVoucherReportform = () => {
         try {
             const response = await apiClient.get('journalVoucher/generate-pdf', {
                 params: { fromDate, toDate },
-                responseType: 'blob'  // Specify blob for PDF
+                responseType: 'blob'
             });
 
             if (response.status === 200) {
                 const blob = new Blob([response.data], { type: 'application/pdf' });
                 const url = window.URL.createObjectURL(blob);
-                window.open(url); // Opens the PDF in a new tab
+                window.open(url);
             } else {
                 console.error("Failed to fetch report");
             }
@@ -59,34 +59,38 @@ const JournalVoucherReportform = () => {
     };
 
     return (
-        <div className='p-4 bg-gray-50 mt-6 ml-6  rounded-md shadow-xl'>
-        <Heading headingText="Journal Voucher Report" />
-            <div className='py-4'>
-                <form className='lg:w-[100%] md:w-[100%] sm:w-[100%]'>
-                    <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-2 m-2">
+        <div className="p-4 bg-gradient-to-br from-sky-50 via-white to-sky-50 mt-6 ml-6 rounded-xl shadow-2xl border border-sky-100">
+            <Heading headingText="Journal Voucher Report" />
+
+            <div className="py-4">
+                <form className="lg:w-full md:w-full sm:w-full">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 m-2">
+                        {/* From Date */}
                         <div className="flex flex-col sm:flex-row sm:items-center mb-4">
-                            <div className="w-full sm:w-[20%] mb-2 sm:mb-0">
-                                <label className="block font-semibold">Date From</label>
+                            <div className="w-full sm:w-1/5 mb-2 sm:mb-0">
+                                <label className="block font-semibold text-sky-800">Date From</label>
                             </div>
-                            <div className="w-full sm:w-[70%]">
-                                <input 
+                            <div className="w-full sm:w-4/5">
+                                <input
                                     type="date"
                                     value={fromDate}
                                     onChange={(e) => setFromDate(e.target.value)}
-                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+                                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-300"
                                 />
                             </div>
                         </div>
+
+                        {/* To Date */}
                         <div className="flex flex-col sm:flex-row sm:items-center mb-4">
-                            <div className="w-full sm:w-[20%] mb-2 sm:mb-0">
-                                <label className="block font-semibold">Date To</label>
+                            <div className="w-full sm:w-1/5 mb-2 sm:mb-0">
+                                <label className="block font-semibold text-sky-800">Date To</label>
                             </div>
-                            <div className="w-full sm:w-[70%]">
-                                <input 
+                            <div className="w-full sm:w-4/5">
+                                <input
                                     type="date"
                                     value={toDate}
                                     onChange={(e) => setToDate(e.target.value)}
-                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+                                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-300"
                                 />
                             </div>
                         </div>
@@ -94,36 +98,41 @@ const JournalVoucherReportform = () => {
                 </form>
                 <div className="flex justify-start w-full space-x-4 p-2">
                     <button
-                        className="bg-green-600 text-sm text-white px-4 py-2 rounded-lg hover:bg-green-900"
-                        type="button"
                         onClick={handlePrint}
+                        type="button"
+                        className="bg-green-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-green-900 inline-flex items-center"
                     >
                         Print
                     </button>
                 </div>
             </div>
-            <div className="bg-white p-2  md:p-2 rounded-lg shadow-md">
-                <div className="overflow-x-auto">
-                    <div className="w-full" style={{ maxHeight: "400px", overflowY: "auto" }}>
-                        <table className="table-auto w-full border border-collapse shadow">
-                            <thead>
-                                <tr className="text-center" style={{ backgroundColor: "#CFE0E733" }}>
-                                    <th className="px-4 py-2 border border-gray-200 text-sky-500">Sr. No.</th>
-                                    <th className="px-4 py-2 border border-gray-200 text-sky-500">Voucher No.</th>
-                                    <th className="px-4 py-2 border border-gray-200 text-sky-500">Voucher Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {data.map((item, index) => (
-                                    <tr key={index}>
-                                        <td className="px-4 py-3 border border-gray-200">{index + 1}</td>
-                                        <td className="px-4 py-3 border border-gray-200">{item.voucherNo}</td>
-                                        <td className="px-4 py-3 border border-gray-200">{item.voucherDate}</td>
+
+            <div className="bg-white p-4 rounded-lg shadow-md border border-sky-100">
+                <div className="overflow-x-auto max-h-[400px]">
+                    <table className="table-auto w-full border border-gray-100 border-collapse shadow-sm rounded-md overflow-hidden">
+                        <thead className="sticky top-0 bg-gradient-to-r from-sky-50 to-sky-100 backdrop-blur z-10 text-center text-xs text-sky-700">
+                            <tr>
+                                <th className="px-4 py-2 border border-gray-100">Sr. No.</th>
+                                <th className="px-4 py-2 border border-gray-100">Voucher No.</th>
+                                <th className="px-4 py-2 border border-gray-100">Voucher Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {data.length > 0 ? (
+                                data.map((item, index) => (
+                                    <tr key={item.journalVoucherId} className="border border-gray-100 odd:bg-white even:bg-sky-50">
+                                        <td className="px-4 py-3 border border-gray-200 text-center">{index + 1}</td>
+                                        <td className="px-4 py-3 border border-gray-200 text-center">{item.voucherNo}</td>
+                                        <td className="px-4 py-3 border border-gray-200 text-center">{item.voucherDate}</td>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="3" className="text-center py-8 text-gray-500">No data available</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
