@@ -213,14 +213,19 @@ const balanceAmount = Math.max(payableAmount - paidAmount);
   };
 
   return (
-    <div className="p-4 bg-gray-50 mt-6 ml-6 rounded-md shadow-xl">
-      <Heading headingText={"Discharge Patient Bill"} />
+    <div className="p-4 bg-gradient-to-br from-sky-50 via-white to-sky-50 mt-6 ml-6  rounded-xl shadow-2xl border border-sky-100">
+      <div className="flex items-center justify-between border-b border-sky-100 pb-3">
+        <div className="flex items-center gap-3">
+          <Heading headingText={"Discharge Patient Bill"} />
+        </div>
+        <div className="text-xs text-sky-700 bg-sky-50 px-3 py-1 rounded-md border border-sky-100">Reception • IPD</div>
+      </div>
       
       {/* Search Section */}
-      <div className="w-full lg:w-[25%] md:w-[60%] sm:w-[100%] flex justify-center items-center py-4">
+      <div className="w-full lg:w-[25%] md:w-[60%] sm:w-[100%] flex justify-center items-center py-4 mt-2">
         <input
           type="text"
-          className="w-full px-4 py-2 border rounded-lg focus:outline-none text-sm"
+          className="w-full px-4 py-2 border rounded-lg focus:outline-none text-sm bg-white/70 backdrop-blur-sm border-gray-200 focus:ring-2 focus:ring-sky-300"
           placeholder="Search By IPD No"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}

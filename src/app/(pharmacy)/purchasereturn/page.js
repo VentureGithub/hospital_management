@@ -312,8 +312,13 @@ const PurchaseReturnPage = () => {
 
 
     return (
-        <div className='p-4 bg-gray-50 mt-6 ml-6  rounded-md shadow-xl'>
-            <Heading headingText="Purchase Return" />
+        <div className='p-4 bg-gradient-to-br from-sky-50 via-white to-sky-50 mt-6 ml-6  rounded-xl shadow-2xl border border-sky-100'>
+            <div className="flex items-center justify-between border-b border-sky-100 pb-3">
+                <div className="flex items-center gap-3">
+                    <Heading headingText="Purchase Return" />
+                </div>
+                <div className="text-xs text-sky-700 bg-sky-50 px-3 py-1 rounded-md border border-sky-100">Pharmacy • Purchases</div>
+            </div>
             <div className="mb-4 border  bg-white rounded-md p-2">
                 <h3 className="text-xl font-semibold text-sky-500">Purchase Details</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-2">

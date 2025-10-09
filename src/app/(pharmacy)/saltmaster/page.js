@@ -131,8 +131,13 @@ const SaltMasterform = () => {
     };
 
     return (
-        <div className="p-4 bg-gray-50 mt-6 ml-6 rounded-md shadow-xl">
-            <Heading headingText="Salt Master" />
+        <div className="p-4 bg-gradient-to-br from-sky-50 via-white to-sky-50 mt-6 ml-6  rounded-xl shadow-2xl border border-sky-100">
+            <div className="flex items-center justify-between border-b border-sky-100 pb-3">
+                <div className="flex items-center gap-3">
+                    <Heading headingText="Salt Master" />
+                </div>
+                <div className="text-xs text-sky-700 bg-sky-50 px-3 py-1 rounded-md border border-sky-100">Pharmacy • Inventory</div>
+            </div>
             <div className="py-4">
                 <Formik
                     initialValues={inputs}
@@ -147,7 +152,7 @@ const SaltMasterform = () => {
                                     <label className="block font-semibold text-sm mb-2">Salt Name</label>
                                     <Field
                                         type="text"
-                                        className="w-full text-sm px-4 py-2 border rounded-lg focus:outline-none"
+                                        className="w-full text-sm px-4 py-2 border rounded-lg focus:outline-none bg-white/70 backdrop-blur-sm border-gray-200 focus:ring-2 focus:ring-sky-300"
                                         name="saltNameString"
                                         onChange={handleChange}
                                         onBlur={handleBlur}
@@ -162,11 +167,11 @@ const SaltMasterform = () => {
                             </div>
 
                             <div className="flex justify-start w-full space-x-4 p-2 my-4">
-                                <button className="bg-gray-600 text-sm text-white px-6 py-2 rounded-lg hover:bg-gray-900" type="button">
+                                <button className="bg-slate-600 text-sm text-white px-6 py-2 rounded-lg hover:bg-slate-800" type="button">
                                     Refresh
                                 </button>
                                 <button
-                                    className="bg-green-600 text-sm text-white px-4 py-2 rounded-lg hover:bg-green-900"
+                                    className="bg-emerald-600 text-sm text-white px-4 py-2 rounded-lg hover:bg-emerald-800"
                                     type="submit"
                                     disabled={isSubmitting}
                                 >
@@ -188,23 +193,23 @@ const SaltMasterform = () => {
                     placeholder="Search by Salt Name"
                     value={saltNameFilter}
                     onChange={handleFilter}
-                    className="p-2 border border-gray-300 text-sm rounded"
+                    className="p-2 border border-gray-300 text-sm rounded bg-white/70 backdrop-blur-sm border-gray-200 focus:ring-2 focus:ring-sky-300"
                 />
             </div>
                 <div className="overflow-x-auto">
                     <div className="w-full" style={{ maxHeight: "400px", overflowY: "auto" }}>
                         <table className="table-auto w-full border border-collapse shadow">
-                            <thead>
-                                <tr className="text-center" style={{ backgroundColor: "#CFE0E733" }}>
-                                    <th className="px-4 py-2 border border-gray-200 text-sky-500"></th>
-                                    <th className="px-4 py-2 border border-gray-200 text-sky-500">Salt Name</th>
+                            <thead className="sticky top-0 z-10">
+                                <tr className="text-center bg-sky-50/70 backdrop-blur">
+                                    <th className="px-4 py-2 border border-gray-200 text-sky-700 text-xs tracking-wide"></th>
+                                    <th className="px-4 py-2 border border-gray-200 text-sky-700 text-xs tracking-wide">Salt Name</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {Array.isArray(filteredData) && filteredData?.length > 0 ? (
                                     paginateData(filteredData).map((transaction, index) => (
-                                        <tr key={index} className="border border-gray-200 text-center">
-                                            <td className="px-4 py-3 border border-gray-200 flex space-x-2">
+                                        <tr key={index} className="border border-gray-200 text-center hover:bg-sky-50/40 transition">
+                                            <td className="px-4 py-3 border border-gray-200 flex space-x-2 justify-center">
                                                 <button
                                                     className="text-blue-500 hover:text-blue-700 flex items-center"
                                                     onClick={() => handleUpdate(transaction)}
@@ -217,7 +222,7 @@ const SaltMasterform = () => {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="2" className="text-center">No data available</td>
+                                        <td colSpan="2" className="text-center py-8 text-gray-500">No data available</td>
                                     </tr>
                                 )}
                             </tbody>
@@ -231,21 +236,21 @@ const SaltMasterform = () => {
                 {/* Previous Button */}
                 <button
                     onClick={handlePreviousPage}
-                    className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+                    className="bg-sky-600 text-white px-3 py-2 rounded-md hover:bg-sky-700 disabled:opacity-50"
                     disabled={page === 1}
                 >
                     Previous
                 </button>
 
                 {/* Page Info */}
-                <div className="text-center">
+                <div className="text-center text-sm text-gray-600 bg-sky-50 border border-sky-100 px-3 py-1 rounded-full">
                     Page {page} of {Math.ceil(filteredData?.length / itemsPerPage)}
                 </div>
 
                 {/* Next Button */}
                 <button
                     onClick={handleNextPage}
-                    className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+                    className="bg-sky-600 text-white px-3 py-2 rounded-md hover:bg-sky-700 disabled:opacity-50"
                     disabled={page * itemsPerPage >= filteredData?.length}
                 >
                     Next

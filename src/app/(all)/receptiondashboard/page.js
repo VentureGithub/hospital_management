@@ -522,4 +522,4 @@ const Reception = () => {
         </>
     );
 };
-export default withAuth(ReceptionDashboard, ['SUPERADMIN', 'ADMIN', 'RECEPTION'])
+export default withAuth(ReceptionDashboard, ['SUPERADMIN', 'ADMIN', 'RECEPTIONIST'])

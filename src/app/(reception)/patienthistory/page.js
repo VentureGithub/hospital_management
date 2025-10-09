@@ -64,19 +64,24 @@ const OPDSearchform = () => {
     };
 
     return (
-        <div className='p-4 bg-gray-50 mt-6 ml-6  rounded-md shadow-xl'>
-             <Heading headingText={"Patient History"} />
-            <div className="flex mb-4">
+        <div className='p-4 bg-gradient-to-br from-sky-50 via-white to-sky-50 mt-6 ml-6  rounded-xl shadow-2xl border border-sky-100'>
+             <div className="flex items-center justify-between border-b border-sky-100 pb-3">
+                <div className="flex items-center gap-3">
+                    <Heading headingText={"Patient History"} />
+                </div>
+                <div className="text-xs text-sky-700 bg-sky-50 px-3 py-1 rounded-md border border-sky-100">Reception • OPD</div>
+             </div>
+            <div className="flex mb-4 mt-3">
                 <input
                     type="text"
                     value={opdNo}
                     onChange={(e) => setOpdNo(e.target.value)}
                     placeholder="Enter OPD Number"
-                    className="border rounded-l px-4 py-2 focus:outline-none"
+                    className="border rounded-l px-4 py-2 focus:outline-none bg-white/70 backdrop-blur-sm border-gray-200 focus:ring-2 focus:ring-sky-300"
                 />
                 <button
                     onClick={handleSearch}
-                    className="bg-blue-500 text-white px-4 py-2 rounded-r hover:bg-blue-700"
+                    className="bg-sky-600 text-white px-4 py-2 rounded-r hover:bg-sky-700 shadow-sm"
                 >
                     Search
                 </button>

@@ -149,8 +149,13 @@ const SaleForm = () => {
     }, [])
 
     return (
-        <div className='p-4 bg-gray-50 mt-6 ml-6  rounded-md shadow-xl'>
-            <Heading headingText="Sale Invoice" />
+        <div className='p-4 bg-gradient-to-br from-sky-50 via-white to-sky-50 mt-6 ml-6  rounded-xl shadow-2xl border border-sky-100'>
+            <div className="flex items-center justify-between border-b border-sky-100 pb-3">
+                <div className="flex items-center gap-3">
+                    <Heading headingText="Sale Invoice" />
+                </div>
+                <div className="text-xs text-sky-700 bg-sky-50 px-3 py-1 rounded-md border border-sky-100">Pharmacy • Billing</div>
+            </div>
             <div className="py-2 ">
                 <form onSubmit={handleSubmit} >
                     <div className="mb-4 border  bg-white rounded-md p-2 shadow-md">

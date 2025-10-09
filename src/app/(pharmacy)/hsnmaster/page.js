@@ -92,8 +92,13 @@ const SaltMasterform = () => {
     };
 
     return (
-        <div className='p-4 bg-gray-50 mt-6 ml-6 rounded-md shadow-xl'>
-            <Heading headingText="HSN Master" />
+        <div className='p-4 bg-gradient-to-br from-sky-50 via-white to-sky-50 mt-6 ml-6  rounded-xl shadow-2xl border border-sky-100'>
+            <div className="flex items-center justify-between border-b border-sky-100 pb-3">
+                <div className="flex items-center gap-3">
+                    <Heading headingText="HSN Master" />
+                </div>
+                <div className="text-xs text-sky-700 bg-sky-50 px-3 py-1 rounded-md border border-sky-100">Pharmacy • Inventory</div>
+            </div>
             <div className='py-4'>
                 <Formik
                     initialValues={inputs}
@@ -108,7 +113,7 @@ const SaltMasterform = () => {
                                     <label className="block font-semibold text-sm mb-2">HSN/SAC No</label>
                                     <Field
                                         type="text"
-                                        className='w-full px-4 py-2 border rounded-lg focus:outline-none text-sm'
+                                        className='w-full px-4 py-2 border rounded-lg focus:outline-none text-sm bg-white/70 backdrop-blur-sm border-gray-200 focus:ring-2 focus:ring-sky-300'
                                         name="hsnCodeString"
                                         placeholder="HSN/SAC No"
                                     />
@@ -118,7 +123,7 @@ const SaltMasterform = () => {
                                     <label className="block font-semibold text-sm mb-2">HSN Short Name</label>
                                     <Field
                                         type="text"
-                                        className='w-full px-4 py-2 border rounded-lg focus:outline-none text-sm'
+                                        className='w-full px-4 py-2 border rounded-lg focus:outline-none text-sm bg-white/70 backdrop-blur-sm border-gray-200 focus:ring-2 focus:ring-sky-300'
                                         name="hsnShortNameString"
                                         placeholder="Short Name"
                                     />
@@ -126,9 +131,9 @@ const SaltMasterform = () => {
                                 </div>
                             </div>
                             <div className="flex justify-start w-full space-x-4 p-2">
-                                <button className="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-900 text-sm" type="reset">Refresh</button>
+                                <button className="bg-slate-600 text-white px-6 py-2 rounded-lg hover:bg-slate-800 text-sm" type="reset">Refresh</button>
                                 <button
-                                    className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-900 text-sm"
+                                    className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-800 text-sm"
                                     type="submit"
                                 >
                                     {isEdit ? "Update" : "Save"}

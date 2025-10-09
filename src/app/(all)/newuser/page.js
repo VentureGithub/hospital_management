@@ -20,11 +20,7 @@ const NewUserForm = () => {
         router.push('/users');
     };
 
-    // const home = () => {
-    //     router.push('/dash');
-    // };
-    
-    const [showPassword, setShowPassword] = useState(false);
+   const [showPassword, setShowPassword] = useState(false);
     const [hospital, setHospital] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -294,12 +290,11 @@ const NewUserForm = () => {
                                 }`}
                             >
                                 <option value="">Select a role</option>
-                                <option value="SUPERADMIN">Super Admin</option>
-                                <option value="ADMIN">Admin</option>
-                                <option value="USER">User</option>
-                                <option value="DOCTOR">Doctor</option>
-                                <option value="RECEPTION">Reception</option>
-                                <option value="PHARMACY">Pharmacy</option>
+                                <option value="SUPERADMIN">SUPER ADMIN</option>
+                                <option value="ADMIN">ADMIN</option>
+                                <option value="USER">USER</option>
+                                <option value="DOCTOR">DOCTOR</option>
+                                <option value="RECEPTIONIST">RECEPTIONIST</option>
                             </select>
                             {formik.touched.roles && formik.errors.roles && (
                                 <div className="text-red-500 text-sm mt-1">{formik.errors.roles}</div>

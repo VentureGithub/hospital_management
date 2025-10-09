@@ -169,8 +169,13 @@ const SupplierMasterform = () => {
 
 
     return (
-        <div className='p-4 bg-gray-50 mt-6 ml-6  rounded-md shadow-xl'>
-            <Heading headingText="Supplier Master" />
+        <div className='p-4 bg-gradient-to-br from-sky-50 via-white to-sky-50 mt-6 ml-6  rounded-xl shadow-2xl border border-sky-100'>
+            <div className="flex items-center justify-between border-b border-sky-100 pb-3">
+                <div className="flex items-center gap-3">
+                    <Heading headingText="Supplier Master" />
+                </div>
+                <div className="text-xs text-sky-700 bg-sky-50 px-3 py-1 rounded-md border border-sky-100">Store • Inventory</div>
+            </div>
             <div className='py-4'>
                 <form className='lg:w-[100%] md:w-[100%] sm:w-[100%]'>
                     <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-3 m-2 ">
@@ -204,7 +209,7 @@ const SupplierMasterform = () => {
                         <div>
                             <label className="block text-gray-700 text-sm">State</label>
 
-                            <select onChange={handleStateChange} name="state" className="w-full px-4 py-2 border rounded-lg focus:outline-none text-sm">
+                            <select onChange={handleStateChange} name="state" className="w-full px-4 py-2 border rounded-lg focus:outline-none text-sm bg-white/70 backdrop-blur-sm border-gray-200 focus:ring-2 focus:ring-sky-300">
                                 {states.map((state, index) => (
                                     <option key={index} value={state}>
                                         {state}
@@ -215,7 +220,7 @@ const SupplierMasterform = () => {
                         <div>
                             <label className="block text-gray-700 text-sm">City</label>
                             <input type="text"
-                                className='w-full px-4 py-2 border rounded-lg focus:outline-none text-sm '
+                                className='w-full px-4 py-2 border rounded-lg focus:outline-none text-sm bg-white/70 backdrop-blur-sm border-gray-200 focus:ring-2 focus:ring-sky-300 '
 
                                 name="city"
                                 onChange={handleChange}
@@ -251,7 +256,7 @@ const SupplierMasterform = () => {
                         <div>
                             <label className="block text-gray-700 text-sm">Payment Method</label>
                             <select
-                                className="w-full px-4 py-2 border rounded-lg focus:outline-none text-sm"
+                                className="w-full px-4 py-2 border rounded-lg focus:outline-none text-sm bg-white/70 backdrop-blur-sm border-gray-200 focus:ring-2 focus:ring-sky-300"
                                 name="paymentMethod"
                                 onChange={handleChange}
                                 value={inputs.paymentMethod}>
@@ -263,7 +268,7 @@ const SupplierMasterform = () => {
     <div>
         <label className="block text-gray-700 text-sm">Credit / Debit</label>
         <select
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none text-sm"
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none text-sm bg-white/70 backdrop-blur-sm border-gray-200 focus:ring-2 focus:ring-sky-300"
             name="drOrCr"
             onChange={handleChange}
             value={inputs.drOrCr}
@@ -279,7 +284,7 @@ const SupplierMasterform = () => {
                         <div>
                             <label className="block text-gray-700 text-sm">Bank Branch</label>
                             <input type="text"
-                                className='w-full px-4 py-2 border rounded-lg focus:outline-none text-sm '
+                                className='w-full px-4 py-2 border rounded-lg focus:outline-none text-sm bg-white/70 backdrop-blur-sm border-gray-200 focus:ring-2 focus:ring-sky-300 '
 
                                 name="branchName"
                                 onChange={handleChange}
@@ -288,7 +293,7 @@ const SupplierMasterform = () => {
                         <div>
                             <label className="block text-gray-700 text-sm">	A/C No</label>
                             <input type="text"
-                                className='w-full px-4 py-2 border rounded-lg focus:outline-none text-sm '
+                                className='w-full px-4 py-2 border rounded-lg focus:outline-none text-sm bg-white/70 backdrop-blur-sm border-gray-200 focus:ring-2 focus:ring-sky-300 '
 
                                 name="accountNo"
                                 onChange={handleChange}
@@ -297,7 +302,7 @@ const SupplierMasterform = () => {
                         <div>
                             <label className="block text-gray-700 text-sm">IFSC Code</label>
                             <input type="text"
-                                className='w-full px-4 py-2 border rounded-lg focus:outline-none text-sm '
+                                className='w-full px-4 py-2 border rounded-lg focus:outline-none text-sm bg-white/70 backdrop-blur-sm border-gray-200 focus:ring-2 focus:ring-sky-300 '
 
                                 name="ifcCode"
                                 onChange={handleChange}
@@ -307,7 +312,7 @@ const SupplierMasterform = () => {
                         <div>
                             <label className="block text-gray-700 text-sm">Ledger Category</label>
                             <select
-                                className="w-full px-4 py-2 border rounded-lg focus:outline-none text-sm"
+                                className="w-full px-4 py-2 border rounded-lg focus:outline-none text-sm bg-white/70 backdrop-blur-sm border-gray-200 focus:ring-2 focus:ring-sky-300"
                                 name="leaderCategory"
                                 onChange={handleChange}
                                 value={inputs.leaderCategory}>
@@ -319,9 +324,9 @@ const SupplierMasterform = () => {
 
                     </div>
                     <div className="flex justify-start  w-full space-x-4 p-2 my-4">
-                        <button className="bg-gray-600 text-white px-6 py-2 text-sm rounded-lg hover:bg-gray-900">Refresh</button>
+                        <button className="bg-slate-600 text-white px-6 py-2 text-sm rounded-lg hover:bg-slate-800">Refresh</button>
                         <button
-                            className="bg-green-600 text-white px-4 py-2 text-sm rounded-lg hover:bg-green-900"
+                            className="bg-emerald-600 text-white px-4 py-2 text-sm rounded-lg hover:bg-emerald-800"
                             onClick={handleSupplierMaster}
                         >
                             {isEdit ? "Update" : "Save"}
@@ -336,8 +341,8 @@ const SupplierMasterform = () => {
                         style={{ maxHeight: "400px", overflowY: "auto" }}
                     >
                         <table className="table-auto w-full border border-collapse shadow">
-                            <thead>
-                                <tr className="text-center" style={{ backgroundColor: "#CFE0E733" }}>
+                            <thead className="sticky top-0 z-10">
+                                <tr className="text-center bg-sky-50/70 backdrop-blur">
                                     <th className="px-4 py-2 border border-gray-200 text-sky-500">Action</th>
                                     <th className="px-4 py-2 border border-gray-200 text-sky-500">Sr No.</th>
                                     <th className="px-4 py-2 border border-gray-200 text-sky-500">Supplier Name</th>
@@ -353,7 +358,7 @@ const SupplierMasterform = () => {
                                     data.map((transaction, index) => (
                                         <tr
                                             key={index}
-                                            className="border border-gray-200 text-center">
+                                            className="border border-gray-200 text-center hover:bg-sky-50/40 transition">
                                             <td className="px-4 py-3 border border-gray-200 flex space-x-2">
                                                 <button className="text-blue-400 hover:text-blue-800 flex items-center"
                                                     onClick={() => handleUpdate(transaction)}

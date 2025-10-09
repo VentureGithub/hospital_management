@@ -62,8 +62,14 @@ const SaleReportform = () => {
         }
     };
     return (
-        <div className="p-6">
-            <div className="p-7">
+        <div className='p-4 bg-gradient-to-br from-sky-50 via-white to-sky-50 mt-6 ml-6  rounded-xl shadow-2xl border border-sky-100'>
+            <div className="flex items-center justify-between border-b border-sky-100 pb-3">
+                <div className="flex items-center gap-3">
+                    <Heading headingText="Sale Report" />
+                </div>
+                <div className="text-xs text-sky-700 bg-sky-50 px-3 py-1 rounded-md border border-sky-100">Pharmacy • Sales</div>
+            </div>
+            <div className="p-4">
                 <form className="lg:w-[100%] md:w-[100%] sm:w-[100%]" onSubmit={handlePrint}>
                     <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-2 m-2">
                         <div className="flex flex-col sm:flex-row sm:items-center mb-4">
@@ -75,7 +81,7 @@ const SaleReportform = () => {
                                     type="text"
                                     value={saleCode}
                                     onChange={handleVoucherChange}
-                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none bg-white/70 backdrop-blur-sm border-gray-200 focus:ring-2 focus:ring-sky-300"
                                     placeholder="Enter Voucher No."
                                 />
                             </div>
@@ -85,7 +91,7 @@ const SaleReportform = () => {
                     <div className="flex justify-start w-full space-x-4 p-2">
                         <button
                             type="submit"
-                            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-900"
+                            className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-800"
                         >
                             Print
                         </button>
@@ -99,8 +105,8 @@ const SaleReportform = () => {
                         style={{ maxHeight: "400px", overflowY: "auto" }}
                     >
                         <table className="table-auto w-full border border-collapse shadow">
-                            <thead>
-                                <tr className="text-center" style={{ backgroundColor: "#CFE0E733" }}>
+                            <thead className="sticky top-0 z-10">
+                                <tr className="text-center bg-sky-50/70 backdrop-blur">
                                     <th className="px-4 py-2 border border-gray-200 text-sky-500">Sr</th>
                                     <th className="px-4 py-2 border border-gray-200 text-sky-500">Vou No.</th>
                                     <th className="px-4 py-2 border border-gray-200 text-sky-500">Employee Name</th>
@@ -114,7 +120,7 @@ const SaleReportform = () => {
                             <tbody>
                                 {Array.isArray(data) && data?.length > 0 ? (
                                     data.map((transaction, index) => (
-                                        <tr key={index} className="border border-gray-200 text-center">
+                                        <tr key={index} className="border border-gray-200 text-center hover:bg-sky-50/40 transition">
                                           
                                             <td className="px-4 py-3 border border-gray-200">{index + 1}</td>
                                             <td className="px-4 py-3 border border-gray-200">{transaction.voucherNo}</td>

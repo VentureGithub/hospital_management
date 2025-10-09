@@ -27,7 +27,7 @@ const Login = () => {
         // Redirect only if token is still valid
         const role = localStorage.getItem("role");
         if (role === "SUPERADMIN" || role === "ADMIN") router.push("/dash");
-        else if (role === "RECEPTION") router.push("/receptiondashboard");
+        else if (role === "RECEPTIONIST") router.push("/receptiondashboard");
       } else {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("role");
@@ -65,15 +65,16 @@ const Login = () => {
 
       if (response.status === 200) {
         localStorage.setItem("accessToken", response.data.data.accessToken);
-        localStorage.setItem("role", response.data.data.role);
+        const formattedName = response.data.data.role.toUpperCase();
+        localStorage.setItem("role", formattedName);
+        localStorage.setItem("username",response.data.data.name)
         alert("Successfully Logged In");
 
         if (
-          response.data.data.role === "SUPERADMIN" || response.data.data.role === "Superadmin" ||
-          response.data.data.role === "ADMIN" || response.data.data.role === "Admin"
+          response.data.data.role === "SUPERADMIN" ||response.data.data.role === "ADMIN" || response.data.data.role === "Admin"
         ) {
           router.push("/dash");
-        } else if (response.data.data.role === "RECEPTION") {
+        } else if (response.data.data.role === "RECEPTIONIST") {
           router.push("/receptiondashboard");
         }
       } else {
