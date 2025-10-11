@@ -229,6 +229,9 @@ const RoomForm = () => {
                   <th className="px-4 py-2 border border-gray-100 text-sky-700 text-xs tracking-wide">
                     Bed No.
                   </th>
+                  <th className="px-4 py-2 border border-gray-100 text-sky-700 text-xs tracking-wide">
+                    Charges
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -245,6 +248,7 @@ const RoomForm = () => {
                       </td>
                       <td className="px-4 py-3 border border-gray-100 uppercase">{transaction.roomTypeName}</td>
                       <td className="px-4 py-3 border border-gray-100 uppercase">{transaction.roomBedNo}</td>
+                       <td className="px-4 py-3 border border-gray-100 uppercase">{transaction.roomBedCharge}</td>
                     </tr>
                   ))
                 ) : (

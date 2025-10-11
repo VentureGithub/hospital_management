@@ -54,7 +54,7 @@ const GenerateSalaryform = () => {
         try {
             let response;
             if (isEdit) {
-                response = await apiClient.put(`salary/updateData`, values);
+                response = await apiClient.put(`accountGroup/updateGroup`, values);
             } else {
                 response = await apiClient.post("accountGroup/create", values);
             }

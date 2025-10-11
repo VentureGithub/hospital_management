@@ -44,7 +44,7 @@ const ServiceTypeMasterForm = () => {
     try {
       let response;
       if (isEdit) {
-        response = await apiClient.put(`servicetypemaster/updateServiceType`, values);
+        response = await apiClient.put(`servicetypemaster/updateServiceTypeData`, values);
       } else {
         response = await apiClient.post(`servicetypemaster/saveServiceTypeMaster`, values);
       }
