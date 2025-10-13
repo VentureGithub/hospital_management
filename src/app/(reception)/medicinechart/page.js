@@ -152,7 +152,7 @@ const Medicinechartform = () => {
           <input
             type="text"
             className="w-full px-4 py-2 border rounded-lg focus:outline-none text-sm bg-white/70 backdrop-blur-sm border-gray-200 focus:ring-2 focus:ring-sky-300"
-            placeholder="Search By IPD"
+            placeholder="IPD No."
             value={searchIpd}
             onChange={(e) => setSearchIpd(e.target.value)}
           />

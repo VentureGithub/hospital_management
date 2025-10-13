@@ -631,7 +631,7 @@ const IPDRegistrationform = () => {
                             className='w-full px-4 py-2 border text-sm rounded-lg focus:outline-none'
                             placeholder="OPD"
                             name="opdNo"
-                            readOnly
+                            
                             onChange={handleChange}
                             value={inputs.opdNo} />
                     </div>

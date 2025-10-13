@@ -1,4 +1,3 @@
-
 'use client'
 import LayoutForm from "../../layouts/layoutForm";
 import Heading from "../../(components)/heding";
@@ -21,21 +20,14 @@ export function LabMaterialPurchase() {
 const LabMaterialPurchaseform = () => {
     const [isEdit, setIsEdit] = useState(false);
     const [data, setData] = useState([]);
-    const [inputs, setInputs] = useState({
-        "labMaterialPurcId": 0,
-        "product": "",
-        "costPerTest": 0,
-        "totalCost": 0,
-        "purchaseDate": "",
-        "testPerform": 0
-    });
 
     const fetchApi = async () => {
         try {
             const response = await apiClient.get(`getAll`);
-            setData(response.data.data);
+            setData(response.data.data || []);
         } catch (error) {
             console.error("Error fetching data:", error);
+            toast.error("Failed to fetch data");
         }
     };
 
@@ -54,12 +46,27 @@ const LabMaterialPurchaseform = () => {
 
     // Formik form handling
     const formik = useFormik({
-        initialValues: inputs,
+        initialValues: {
+            labMaterialPurcId: 0,
+            product: "",
+            costPerTest: 0,
+            totalCost: 0,
+            purchaseDate: "",
+            testPerform: 0
+        },
         validationSchema: validationSchema,
         onSubmit: async (values) => {
             try {
+                const payload = {
+                    ...values,
+                    // ensure numeric fields are numbers
+                    costPerTest: Number(values.costPerTest) || 0,
+                    testPerform: Number(values.testPerform) || 0,
+                    totalCost: Number(values.totalCost) || 0
+                };
+
                 if (isEdit) {
-                    const response = await apiClient.put(`updateMaterialPurchase`, values);
+                    const response = await apiClient.put(`updateMaterialPurchase`, payload);
                     if (response.status === 200) {
                         toast.success("Data updated successfully");
                         setIsEdit(false);
@@ -67,14 +74,14 @@ const LabMaterialPurchaseform = () => {
                         toast.error("Update failed! Please try again");
                     }
                 } else {
-                    const response = await apiClient.post(`save`, values);
+                    const response = await apiClient.post(`save`, payload);
                     if (response.status === 200) {
                         toast.success("Data saved successfully");
                     } else {
                         toast.error("Save failed! Please try again");
                     }
                 }
-                fetchApi();
+                await fetchApi();
                 resetInputs();
             } catch (error) {
                 console.error("Error handling lab material purchase:", error);
@@ -83,8 +90,34 @@ const LabMaterialPurchaseform = () => {
         }
     });
 
+    // Update handler for fields that should recalc totalCost
+    const handleFieldChange = (name, rawValue) => {
+        // convert to number for numeric fields; allow empty string
+        const value = rawValue === '' ? '' : (name === 'testPerform' || name === 'costPerTest' ? Number(rawValue) : rawValue);
+
+        // set the changed field
+        formik.setFieldValue(name, value);
+
+        // if either testPerform or costPerTest changed, recompute totalCost
+        if (name === 'testPerform' || name === 'costPerTest') {
+            const testPerform = name === 'testPerform' ? (Number(rawValue) || 0) : (Number(formik.values.testPerform) || 0);
+            const costPerTest = name === 'costPerTest' ? (Number(rawValue) || 0) : (Number(formik.values.costPerTest) || 0);
+
+            const total = testPerform * costPerTest;
+            formik.setFieldValue('totalCost', total);
+        }
+    };
+
     const handleUpdate = (labMaterialPurchase) => {
-        formik.setValues(labMaterialPurchase);
+        // Map incoming object into the form fields, ensure numbers/dates normalized
+        formik.setValues({
+            labMaterialPurcId: labMaterialPurchase.labMaterialPurcId ?? 0,
+            product: labMaterialPurchase.product ?? "",
+            costPerTest: labMaterialPurchase.costPerTest ?? 0,
+            totalCost: labMaterialPurchase.totalCost ?? 0,
+            purchaseDate: labMaterialPurchase.purchaseDate ? labMaterialPurchase.purchaseDate.split('T')[0] : "",
+            testPerform: labMaterialPurchase.testPerform ?? 0
+        });
         setIsEdit(true);
     };
 
@@ -105,7 +138,7 @@ const LabMaterialPurchaseform = () => {
                                 type="date"
                                 className="w-full px-4 py-2 text-sm border rounded-lg focus:outline-none"
                                 name="purchaseDate"
-                                onChange={formik.handleChange}
+                                onChange={(e) => formik.setFieldValue('purchaseDate', e.target.value)}
                                 onBlur={formik.handleBlur}
                                 value={formik.values.purchaseDate}
                             />
@@ -127,15 +160,15 @@ const LabMaterialPurchaseform = () => {
                                 <div className="text-red-600 text-sm">{formik.errors.product}</div>
                             ) : null}
                         </div>
+
                         <div >
                             <label className="block text-sm">Total Cost </label>
                             <input
                                 type="text"
-                                className="w-full px-4 py-2 text-sm border rounded-lg focus:outline-none"
+                                className="w-full px-4 py-2 text-sm border rounded-lg focus:outline-none bg-gray-100"
                                 name="totalCost"
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
                                 value={formik.values.totalCost}
+                                readOnly
                             />
                             {formik.touched.totalCost && formik.errors.totalCost ? (
                                 <div className="text-red-600 text-sm">{formik.errors.totalCost}</div>
@@ -148,9 +181,10 @@ const LabMaterialPurchaseform = () => {
                                 type="number"
                                 className="w-full px-4 py-2 border text-sm rounded-lg focus:outline-none"
                                 name="testPerform"
-                                onChange={formik.handleChange}
+                                onChange={(e) => handleFieldChange('testPerform', e.target.value)}
                                 onBlur={formik.handleBlur}
                                 value={formik.values.testPerform}
+                                min="0"
                             />
                             {formik.touched.testPerform && formik.errors.testPerform ? (
                                 <div className="text-red-600 text-sm">{formik.errors.testPerform}</div>
@@ -160,11 +194,13 @@ const LabMaterialPurchaseform = () => {
                         <div>
                             <label className="block text-sm">Per Test Cost</label>
                             <input
-                                type="text"
+                                type="number"
                                 className="w-full px-4 py-2 text-sm border rounded-lg focus:outline-none"
                                 name="costPerTest"
-                                value={formik.values.costPerTest} // Display calculated rate
-                                onChange={formik.handleChange}
+                                value={formik.values.costPerTest}
+                                onChange={(e) => handleFieldChange('costPerTest', e.target.value)}
+                                onBlur={formik.handleBlur}
+                                min="0"
                             />
                             {formik.touched.costPerTest && formik.errors.costPerTest ? (
                                 <div className="text-red-600 text-sm">{formik.errors.costPerTest}</div>
@@ -176,6 +212,7 @@ const LabMaterialPurchaseform = () => {
                         <button
                             className="bg-gray-600 text-white text-sm px-6 py-2 rounded-lg hover:bg-gray-900"
                             type="button"
+                            onClick={fetchApi}
                         >
                             Refresh
                         </button>

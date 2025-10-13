@@ -1,42 +1,40 @@
 'use client';
 import LayoutForm from "../../layouts/layoutForm";
 import Heading from "../../(components)/heding";
-import { FaPencilAlt, FaSync, FaSave, FaTrash } from "react-icons/fa";
+import { FaPencilAlt, FaSync, FaSave } from "react-icons/fa";
 import apiClient from "../../config";
 import withAuth from '@/app/(components)/WithAuth';
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 
-export function SalaryDeduction() {
+export function SalaryAddition() {
   return (
     <LayoutForm>
-      <SalaryDeductionForm />
+      <SalaryAdditionForm />
     </LayoutForm>
   );
 }
 
-const SalaryDeductionForm = () => {
+const SalaryAdditionForm = () => {
   const [data, setData] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [isLoadingEmployees, setIsLoadingEmployees] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [inputs, setInputs] = useState({
-    deductionId: 0,
+    incrementId: 0,
     empCode: "",
     empName: "",
+    salaryIncDate: "",
     depName: "",
     designationName: "",
     joiningDate: "",
     dateOfBirth: "",
     jobType: "",
+    remark: "",
     phnNo: "",
     basicSalary: "",
     extraSalary: "",
-    deductionType: "",
-    deductionAmount: "",
-    deductionDate: "",
-    deductionMonth: "",
-    remark: ""
+    incremtntAmnt: ""
   });
   const [isEdit, setIsEdit] = useState(false);
 
@@ -45,14 +43,14 @@ const SalaryDeductionForm = () => {
     fetchEmployees();
   }, []);
 
-  // Fetch all salary deductions
+  // Fetch all salary additions
   const fetchData = async () => {
     try {
-      const {data} = await apiClient.get(`salary/getAllSalaryDeductions`);
+      const {data} = await apiClient.get(`salary/getAllSalaryAdditions`);
       setData(data.data || []);
     } catch (error) {
-      console.error("Error fetching salary deductions:", error);
-      toast.error("Failed to fetch salary deductions.");
+      console.error("Error fetching salary additions:", error);
+      toast.error("Failed to fetch salary additions.");
     }
   };
 
@@ -77,22 +75,20 @@ const SalaryDeductionForm = () => {
     if (!selectedEmpCode) {
       // Clear all fields if no employee selected
       setInputs(prev => ({
-        deductionId: 0,
+        incrementId: 0,
         empCode: "",
         empName: "",
+        salaryIncDate: prev.salaryIncDate,
         depName: "",
         designationName: "",
         joiningDate: "",
         dateOfBirth: "",
         jobType: "",
+        remark: prev.remark,
         phnNo: "",
         basicSalary: "",
         extraSalary: "",
-        deductionType: prev.deductionType,
-        deductionAmount: prev.deductionAmount,
-        deductionDate: prev.deductionDate,
-        deductionMonth: prev.deductionMonth,
-        remark: prev.remark
+        incremtntAmnt: prev.incremtntAmnt
       }));
       return;
     }
@@ -128,30 +124,14 @@ const SalaryDeductionForm = () => {
       toast.error("Please select an employee");
       return false;
     }
-    if (!inputs.deductionType) {
-      toast.error("Please select deduction type");
+    if (!inputs.salaryIncDate) {
+      toast.error("Please select salary increment date");
       return false;
     }
-    if (!inputs.deductionDate) {
-      toast.error("Please select deduction date");
+    if (!inputs.incremtntAmnt || parseFloat(inputs.incremtntAmnt) <= 0) {
+      toast.error("Please enter a valid increment amount");
       return false;
     }
-    if (!inputs.deductionMonth) {
-      toast.error("Please select deduction month");
-      return false;
-    }
-    if (!inputs.deductionAmount || parseFloat(inputs.deductionAmount) <= 0) {
-      toast.error("Please enter a valid deduction amount");
-      return false;
-    }
-    
-    // Check if deduction amount exceeds total salary
-    const totalSalary = parseFloat(inputs.basicSalary || 0) + parseFloat(inputs.extraSalary || 0);
-    if (parseFloat(inputs.deductionAmount) > totalSalary) {
-      toast.error("Deduction amount cannot exceed total salary");
-      return false;
-    }
-    
     return true;
   };
 
@@ -171,36 +151,34 @@ const SalaryDeductionForm = () => {
     try {
       // Prepare data with proper types
       const payload = {
-        deductionId: isEdit ? parseInt(inputs.deductionId) : 0,
+        incrementId: isEdit ? parseInt(inputs.incrementId) : 0,
         empCode: parseInt(inputs.empCode),
         empName: inputs.empName,
+        salaryIncDate: inputs.salaryIncDate,
         depName: inputs.depName,
         designationName: inputs.designationName,
         joiningDate: inputs.joiningDate,
         dateOfBirth: inputs.dateOfBirth,
         jobType: inputs.jobType,
+        remark: inputs.remark,
         phnNo: parseInt(inputs.phnNo) || 0,
         basicSalary: parseFloat(inputs.basicSalary) || 0,
         extraSalary: parseFloat(inputs.extraSalary) || 0,
-        deductionType: inputs.deductionType,
-        deductionAmount: parseFloat(inputs.deductionAmount),
-        deductionDate: inputs.deductionDate,
-        deductionMonth: inputs.deductionMonth,
-        remark: inputs.remark
+        incremtntAmnt: parseFloat(inputs.incremtntAmnt)
       };
 
       if (isEdit) {
-        const response = await apiClient.put(`salary/updateSalaryDeduction`, payload);
+        const response = await apiClient.put(`salary/updateSalaryAddition`, payload);
         if (response.status === 200) {
-          toast.success("Salary deduction updated successfully");
+          toast.success("Salary addition updated successfully");
           setIsEdit(false);
         } else {
           toast.error(response.data?.message || "Update failed.");
         }
       } else {
-        const response = await apiClient.post(`salary/createSalaryDeduction`, payload);
+        const response = await apiClient.post(`salary/createSalaryAddition`, payload);
         if (response.status === 200 || response.status === 201) {
-          toast.success("Salary deduction saved successfully");
+          toast.success("Salary addition saved successfully");
         } else {
           toast.error(response.data?.message || "Save failed.");
         }
@@ -223,67 +201,46 @@ const SalaryDeductionForm = () => {
       phnNo: item.phnNo?.toString() || "",
       basicSalary: item.basicSalary?.toString() || "",
       extraSalary: item.extraSalary?.toString() || "",
-      deductionAmount: item.deductionAmount?.toString() || ""
+      incremtntAmnt: item.incremtntAmnt?.toString() || ""
     });
     setIsEdit(true);
   };
 
-  const handleDelete = async (deductionId) => {
-    if (!window.confirm("Are you sure you want to delete this deduction?")) {
-      return;
-    }
-
-    try {
-      const response = await apiClient.delete(`salary/deleteSalaryDeduction/${deductionId}`);
-      if (response.status === 200) {
-        toast.success("Deduction deleted successfully");
-        await fetchData();
-      } else {
-        toast.error("Failed to delete deduction");
-      }
-    } catch (error) {
-      console.error("Error deleting deduction:", error);
-      toast.error(error.response?.data?.message || "Error deleting deduction");
-    }
-  };
-
   const handleRefresh = () => {
     setInputs({
-      deductionId: 0,
+      incrementId: 0,
       empCode: "",
       empName: "",
+      salaryIncDate: "",
       depName: "",
       designationName: "",
       joiningDate: "",
       dateOfBirth: "",
       jobType: "",
+      remark: "",
       phnNo: "",
       basicSalary: "",
       extraSalary: "",
-      deductionType: "",
-      deductionAmount: "",
-      deductionDate: "",
-      deductionMonth: "",
-      remark: ""
+      incremtntAmnt: ""
     });
     setIsEdit(false);
   };
 
   return (
-    <div className="p-6 bg-gradient-to-br from-red-50 via-white to-red-50 rounded-xl shadow-xl border border-red-100 ml-6 mt-6">
-      <Heading headingText="Salary Deduction" />
+    <div className="p-6 bg-gradient-to-br from-sky-50 via-white to-sky-50 rounded-xl shadow-xl border border-sky-100 ml-6 mt-6">
+      <Heading headingText="Salary Addition / Increment" />
 
       <form onSubmit={handleSave} className="space-y-6 mt-6">
         {/* Employee Selection */}
-        <div className="bg-white p-4 rounded-lg border-2 border-red-200">
-          <label className="block mb-2 font-semibold text-red-800">
+        <div className="bg-white p-4 rounded-lg border-2 border-sky-200">
+          <label className="block mb-2 font-semibold text-sky-800">
             Select Employee <span className="text-red-500">*</span>
           </label>
           <select
             value={inputs.empCode}
             onChange={handleEmployeeSelect}
             disabled={isLoadingEmployees || isEdit}
-            className="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-red-300 disabled:bg-gray-100 disabled:cursor-not-allowed"
+            className="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-sky-300 disabled:bg-gray-100 disabled:cursor-not-allowed"
           >
             <option value="">
               {isLoadingEmployees ? "Loading employees..." : "Select Employee"}
@@ -302,7 +259,7 @@ const SalaryDeductionForm = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Auto-filled Employee Details (Read-only) */}
+          {/* Auto-filled Employee Details */}
           <div>
             <label className="block mb-2 font-semibold text-gray-700">Employee Name</label>
             <input
@@ -404,91 +361,55 @@ const SalaryDeductionForm = () => {
 
           {/* Editable Fields */}
           <div className="md:col-span-2 lg:col-span-3">
-            <hr className="my-4 border-red-200" />
-            <h3 className="text-lg font-semibold text-red-700 mb-4">Deduction Details</h3>
+            <hr className="my-4 border-sky-200" />
+            <h3 className="text-lg font-semibold text-sky-700 mb-4">Increment Details</h3>
           </div>
 
           <div>
-            <label className="block mb-2 font-semibold text-red-800">
-              Deduction Type <span className="text-red-500">*</span>
-            </label>
-            <select
-              name="deductionType"
-              value={inputs.deductionType}
-              onChange={handleChange}
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-red-300"
-            >
-              <option value="">Select Deduction Type</option>
-              <option value="Advance">Advance</option>
-              <option value="Penalty">Penalty</option>
-              <option value="PF">PF (Provident Fund)</option>
-              <option value="ESI">ESI</option>
-              <option value="Loan">Loan</option>
-              <option value="Tax">Tax</option>
-              <option value="Late Fine">Late Fine</option>
-              <option value="Absent Deduction">Absent Deduction</option>
-              <option value="Other Deduction">Other Deduction</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block mb-2 font-semibold text-red-800">
-              Deduction Date <span className="text-red-500">*</span>
+            <label className="block mb-2 font-semibold text-sky-800">
+              Salary Increment Date <span className="text-red-500">*</span>
             </label>
             <input
               type="date"
-              name="deductionDate"
-              value={inputs.deductionDate}
+              name="salaryIncDate"
+              value={inputs.salaryIncDate}
               onChange={handleChange}
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-red-300"
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-sky-300"
             />
           </div>
 
           <div>
-            <label className="block mb-2 font-semibold text-red-800">
-              Deduction Month <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="month"
-              name="deductionMonth"
-              value={inputs.deductionMonth}
-              onChange={handleChange}
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-red-300"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-2 font-semibold text-red-800">
-              Deduction Amount <span className="text-red-500">*</span>
+            <label className="block mb-2 font-semibold text-sky-800">
+              Increment Amount <span className="text-red-500">*</span>
             </label>
             <input
               type="number"
-              name="deductionAmount"
-              value={inputs.deductionAmount}
+              name="incremtntAmnt"
+              value={inputs.incremtntAmnt}
               onChange={handleChange}
               min="0"
               step="0.01"
-              placeholder="Enter deduction amount"
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-red-300"
+              placeholder="Enter increment amount"
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-sky-300"
             />
           </div>
 
-          <div className="md:col-span-2">
-            <label className="block mb-2 font-semibold text-red-800">Remark</label>
+          <div className="md:col-span-2 lg:col-span-1">
+            <label className="block mb-2 font-semibold text-sky-800">Remark</label>
             <input
               type="text"
               name="remark"
               value={inputs.remark}
               onChange={handleChange}
               placeholder="Enter remark (optional)"
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-red-300"
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-sky-300"
             />
           </div>
 
-          {/* Display Salary After Deduction */}
-          {inputs.basicSalary && inputs.deductionAmount && (
-            <div className="md:col-span-2 lg:col-span-3 bg-red-50 p-4 rounded-lg border-2 border-red-200">
-              <h4 className="font-semibold text-red-800 mb-2">💸 Salary Calculation</h4>
+          {/* Display New Salary Calculation */}
+          {inputs.basicSalary && inputs.incremtntAmnt && (
+            <div className="md:col-span-2 lg:col-span-3 bg-sky-50 p-4 rounded-lg border-2 border-sky-200">
+              <h4 className="font-semibold text-sky-800 mb-2">💰 Salary Calculation</h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                 <div>
                   <p className="text-gray-600">Current Salary:</p>
@@ -497,15 +418,15 @@ const SalaryDeductionForm = () => {
                   </p>
                 </div>
                 <div>
-                  <p className="text-gray-600">Deduction:</p>
-                  <p className="text-lg font-bold text-red-600">
-                    -₹{parseFloat(inputs.deductionAmount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                  <p className="text-gray-600">Increment:</p>
+                  <p className="text-lg font-bold text-sky-600">
+                    +₹{parseFloat(inputs.incremtntAmnt).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                   </p>
                 </div>
                 <div>
-                  <p className="text-gray-600">Salary After Deduction:</p>
+                  <p className="text-gray-600">New Salary:</p>
                   <p className="text-lg font-bold text-blue-600">
-                    ₹{(parseFloat(inputs.basicSalary) + parseFloat(inputs.extraSalary || 0) - parseFloat(inputs.deductionAmount)).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                    ₹{(parseFloat(inputs.basicSalary) + parseFloat(inputs.extraSalary || 0) + parseFloat(inputs.incremtntAmnt)).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                   </p>
                 </div>
               </div>
@@ -528,7 +449,7 @@ const SalaryDeductionForm = () => {
             className={`inline-flex items-center gap-2 px-6 py-2 text-white rounded-lg transition-colors duration-200 ${
               isSubmitting 
                 ? 'bg-gray-400 cursor-not-allowed' 
-                : 'bg-red-600 hover:bg-red-700'
+                : 'bg-green-600 hover:bg-green-700'
             }`}
           >
             <FaSave /> {isSubmitting ? 'Processing...' : isEdit ? "Update" : "Save"}
@@ -537,72 +458,52 @@ const SalaryDeductionForm = () => {
       </form>
 
       {/* Data Table */}
-      <div className="mt-8 bg-white border border-red-100 rounded-lg shadow-md">
+      <div className="mt-8 bg-white border border-sky-100 rounded-lg shadow-md">
         <div className="overflow-x-auto max-h-96">
-          <table className="w-full border-collapse text-center text-sm">
-            <thead className="sticky top-0 bg-gradient-to-r from-red-50 to-red-100 backdrop-blur text-red-700">
+          <table className="w-full border-collapse text-center">
+            <thead className="sticky top-0 bg-gradient-to-r from-sky-50 to-sky-100 backdrop-blur text-sky-700">
               <tr>
                 <th className="p-3 border border-gray-200">Action</th>
                 <th className="p-3 border border-gray-200">Emp Code</th>
                 <th className="p-3 border border-gray-200">Employee Name</th>
                 <th className="p-3 border border-gray-200">Department</th>
-                <th className="p-3 border border-gray-200">Deduction Type</th>
-                <th className="p-3 border border-gray-200">Deduction Month</th>
-                <th className="p-3 border border-gray-200">Deduction Date</th>
-                <th className="p-3 border border-gray-200">Amount</th>
+                <th className="p-3 border border-gray-200">Designation</th>
+                <th className="p-3 border border-gray-200">Increment Date</th>
+                <th className="p-3 border border-gray-200">Increment Amount</th>
                 <th className="p-3 border border-gray-200">Remark</th>
               </tr>
             </thead>
             <tbody>
               {data.length ? (
                 data.map((item) => (
-                  <tr key={item.deductionId} className="hover:bg-red-50 transition-colors">
+                  <tr key={item.incrementId} className="hover:bg-sky-50 transition-colors">
                     <td className="p-3 border border-gray-200">
-                      <div className="flex justify-center gap-2">
-                        <button
-                          className="text-blue-500 hover:text-blue-700 transition-colors p-2"
-                          onClick={() => handleUpdate(item)}
-                          aria-label="Edit salary deduction"
-                          title="Edit"
-                        >
-                          <FaPencilAlt />
-                        </button>
-                        <button
-                          className="text-red-500 hover:text-red-700 transition-colors p-2"
-                          onClick={() => handleDelete(item.deductionId)}
-                          aria-label="Delete salary deduction"
-                          title="Delete"
-                        >
-                          <FaTrash />
-                        </button>
-                      </div>
+                      <button
+                        className="text-blue-500 hover:text-blue-700 transition-colors p-2"
+                        onClick={() => handleUpdate(item)}
+                        aria-label="Edit salary addition"
+                        title="Edit"
+                      >
+                        <FaPencilAlt />
+                      </button>
                     </td>
                     <td className="p-3 border border-gray-200 font-medium">{item.empCode}</td>
                     <td className="p-3 border border-gray-200">{item.empName}</td>
                     <td className="p-3 border border-gray-200">{item.depName}</td>
+                    <td className="p-3 border border-gray-200">{item.designationName}</td>
+                    <td className="p-3 border border-gray-200">{item.salaryIncDate}</td>
                     <td className="p-3 border border-gray-200">
-                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                        ['Penalty', 'Late Fine', 'Tax', 'Absent Deduction'].includes(item.deductionType)
-                          ? 'bg-red-100 text-red-700'
-                          : 'bg-orange-100 text-orange-700'
-                      }`}>
-                        {item.deductionType}
+                      <span className="font-semibold text-sky-600">
+                        +₹{parseFloat(item.incremtntAmnt).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                       </span>
                     </td>
-                    <td className="p-3 border border-gray-200">{item.deductionMonth}</td>
-                    <td className="p-3 border border-gray-200">{item.deductionDate}</td>
-                    <td className="p-3 border border-gray-200">
-                      <span className="font-semibold text-red-600">
-                        -₹{parseFloat(item.deductionAmount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                      </span>
-                    </td>
-                    <td className="p-3 border border-gray-200 text-gray-600">{item.remark || '-'}</td>
+                    <td className="p-3 border border-gray-200 text-sm text-gray-600">{item.remark || '-'}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={9} className="p-6 text-gray-500">
-                    No salary deductions available
+                  <td colSpan={8} className="p-6 text-gray-500">
+                    No salary additions available
                   </td>
                 </tr>
               )}
@@ -611,11 +512,11 @@ const SalaryDeductionForm = () => {
         </div>
       </div>
 
-      <p className="mt-4 text-red-700 font-semibold text-sm">
-        <strong>Note:</strong> Select an employee to automatically load their details. Deduction cannot exceed total salary.
+      <p className="mt-4 text-sky-700 font-semibold text-sm">
+        <strong>Note:</strong> Select an employee to automatically load their details. Only increment amount and date are editable.
       </p>
     </div>
   );
 };
 
-export default withAuth(SalaryDeduction, ["SUPERADMIN", "ADMIN", "DOCTOR"]);
+export default withAuth(SalaryAddition, ["SUPERADMIN", "ADMIN", "DOCTOR"]);

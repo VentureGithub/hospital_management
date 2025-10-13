@@ -107,10 +107,10 @@ const navigationConfig = {
       { label: 'Employee Joining', path: '/employee', icon: MdPeople, roles: ["SUPERADMIN", "ADMIN"], },
       { label: 'Employee Attendance', path: '/employeeattendance', icon: IoMdCalendar, roles: ["SUPERADMIN", "ADMIN"], },
       { label: 'Employee Detail Report', path: '/employeedetailreport', icon: FaChartLine, roles: ["SUPERADMIN", "ADMIN"], },
-      { label: 'Salary Deduction', path: '/salarydeduction', icon: IoMdCash, roles: ["SUPERADMIN", "ADMIN"], },
-      { label: 'Generate Salary', path: '/generatesalary', icon: FaReceipt, roles: ["SUPERADMIN", "ADMIN"], },
+      { label: 'Salary Addition', path: '/salaryaddition', icon: IoMdCash, roles: ["SUPERADMIN", "ADMIN"], },
+       { label: 'Salary Deduction', path: '/salarydeduction', icon: IoMdCash, roles: ["SUPERADMIN", "ADMIN"], },
       { label: 'Salary Add/Deduction Report', path: '/salarydeductionreport', icon: FaChartLine, roles: ["SUPERADMIN", "ADMIN"], },
-      { label: 'Salary Increment', path: '/employeesalaryincrement', icon: IoMdCash, roles: ["SUPERADMIN", "ADMIN"], }
+     
       
     ]
   },

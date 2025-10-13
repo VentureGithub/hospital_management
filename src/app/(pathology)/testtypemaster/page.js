@@ -1,4 +1,3 @@
-
 'use client'
 import LayoutForm from "../../layouts/layoutForm";
 import Heading from "../../(components)/heding";
@@ -12,17 +11,18 @@ export function TestType() {
     return (
         <LayoutForm>
             <Diagnosisform />
-           </LayoutForm>
+        </LayoutForm>
     );
 }
 
 const Diagnosisform = () => {
     const [data, setData] = useState([]);
     const [inputs, setInputs] = useState({
-        testTypeId: 0,
+        testTypeId: 0,         // internal id used in listing
         typeName: "",
         description: "",
-        active: "true"
+        active: "true",        // kept as string because select returns string; convert when sending
+        entryDate: new Date().toISOString().split('T')[0] // default today's date YYYY-MM-DD
     });
     const [isEdit, setIsEdit] = useState(false);
 
@@ -43,10 +43,20 @@ const Diagnosisform = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            // Build request payload normalized to API contract
+            const payload = {
+                typeId: inputs.testTypeId || 0,
+                typeName: inputs.typeName,
+                description: inputs.description,
+                active: inputs.active === true || inputs.active === 'true',
+                entryDate: inputs.entryDate || new Date().toISOString().split('T')[0]
+            };
+
             if (isEdit) {
+                // NEW updated endpoint (PUT)
                 const response = await apiClient.put(
-                    `DiagnosisMaster/updateData`,
-                    inputs
+                    `testTypeMaster/update`,
+                    payload
                 );
                 if (response.status === 200) {
                     alert("Data updated successfully");
@@ -55,9 +65,17 @@ const Diagnosisform = () => {
                     alert("Update failed! Please try again");
                 }
             } else {
+                // Create (POST) — keep existing endpoint
+                // convert active to boolean for create as well
+                const createPayload = {
+                    typeName: inputs.typeName,
+                    description: inputs.description,
+                    active: inputs.active === true || inputs.active === 'true',
+                    entryDate: inputs.entryDate || new Date().toISOString().split('T')[0]
+                };
                 const response = await apiClient.post(
                     `testTypeMaster/saveTestTypeMaster`,
-                    inputs
+                    createPayload
                 );
                 if (response.status === 200) {
                     alert("Data saved successfully");
@@ -65,12 +83,13 @@ const Diagnosisform = () => {
                     alert("Save failed! Please try again");
                 }
             }
-            fetchApi();
+            await fetchApi();
             setInputs({
                 testTypeId: 0,
                 typeName: "",
                 description: "",
-                active: "true"
+                active: "true",
+                entryDate: new Date().toISOString().split('T')[0]
             });
         } catch (error) {
             console.error("Error handling test type:", error);
@@ -79,11 +98,15 @@ const Diagnosisform = () => {
     };
 
     const handleUpdate = (test) => {
+        // Map the fetched record into the inputs. Some APIs return `testTypeId`, some `typeId`.
+        const incomingId = test.testTypeId ?? test.typeId ?? 0;
         setInputs({
-            testTypeId: test.testTypeId,
-            typeName: test.typeName,
-            description: test.description,
-            active: test.active
+            testTypeId: incomingId,
+            typeName: test.typeName ?? "",
+            description: test.description ?? "",
+            // preserve boolean as string for the select control
+            active: (test.active === true || test.active === 'true') ? 'true' : 'false',
+            entryDate: test.entryDate ? test.entryDate.split('T')[0] : new Date().toISOString().split('T')[0]
         });
         setIsEdit(true);
     };
@@ -100,7 +123,7 @@ const Diagnosisform = () => {
         <div className='p-4 bg-gray-50 mt-6 ml-6 rounded-md shadow-xl'>
             <Heading headingText="Test Type Master" />
             <div className='py-4'>
-                <form className='lg:w-[60%] md:w-[100%] sm:w-[100%]'>
+                <form className='lg:w-[60%] md:w-[100%] sm:w-[100%]' onSubmit={handleSubmit}>
                     <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-2 m-2">
                         <div className="flex flex-col sm:flex-row sm:items-center mb-4">
                             <div className="w-full sm:w-[20%] mb-2 sm:mb-0">
@@ -146,12 +169,26 @@ const Diagnosisform = () => {
                                 </select>
                             </div>
                         </div>
+                        <div className="flex flex-col sm:flex-row sm:items-center mb-4">
+                            <div className="w-full sm:w-[20%] mb-2 sm:mb-0">
+                                <label className="block text-sm">Entry Date</label>
+                            </div>
+                            <div className="w-full sm:w-[80%]">
+                                <input
+                                    type="date"
+                                    className="w-full px-4 text-sm py-2 border rounded-lg focus:outline-none"
+                                    name="entryDate"
+                                    onChange={handleChange}
+                                    value={inputs.entryDate}
+                                />
+                            </div>
+                        </div>
                     </div>
                     <div className="flex justify-start my-3 w-full space-x-4 p-2">
                         <button className="bg-gray-600 text-sm text-white px-6 py-2 rounded-lg hover:bg-gray-900" type="button" onClick={fetchApi}>Refresh</button>
                         <button
                             className="bg-green-600 text-sm text-white px-4 py-2 rounded-lg hover:bg-green-900"
-                            onClick={handleSubmit}
+                            type="submit"
                         >
                             {isEdit ? "Update" : "Save"}
                         </button>
@@ -210,5 +247,3 @@ const Diagnosisform = () => {
 };
 
 export default withAuth(TestType, ['SUPERADMIN', 'ADMIN', 'DOCTOR'])
-
-
