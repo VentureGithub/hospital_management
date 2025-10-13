@@ -92,7 +92,7 @@ const AmbulanceForm = () => {
 
   return (
     <div className="p-4 bg-gradient-to-br from-sky-50 via-white to-sky-50 mt-6 ml-6 rounded-xl shadow-2xl border border-sky-100">
-      <Heading headingText="Ambulance Master" />
+      <Heading headingText="Ambulance Masterrrr" />
       <div className="py-4">
         <Formik
           initialValues={initialValues}
